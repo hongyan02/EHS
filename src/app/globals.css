@@ -1,26 +1,228 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    /* 新色调色卡 */
+    --primary-dark: #222831; /* 深色黑灰 */
+    --secondary-dark: #393e46; /* 中等灰色 */
+    --accent-teal: #00adb5; /* 青蓝色/主色调 */
+    --light-gray: #eeeeee; /* 浅灰色 */
+
+    /* 应用新颜色方案 */
+    --background: #eeeeee;
+    --foreground: #222831;
+    --primary: #00adb5;
+    --secondary: #393e46;
+    --muted: #eeeeee;
+    --accent: #00adb5;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-primary: var(--primary);
+    --color-secondary: var(--secondary);
+    --color-accent: var(--accent);
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    :root {
+        --background: #222831;
+        --foreground: #eeeeee;
+        --primary: #00adb5;
+        --secondary: #393e46;
+    }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 登录页面自定义样式 */
+
+/* 自定义表单样式 */
+.ant-form-item-label > label {
+    font-weight: 500;
+    color: var(--primary-dark);
+}
+
+.ant-input:focus,
+.ant-input-focused {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 0 2px rgba(0, 173, 181, 0.1);
+}
+
+.ant-input-password:focus,
+.ant-input-password-focused {
+    border-color: var(--accent-teal);
+    box-shadow: 0 0 0 2px rgba(0, 173, 181, 0.1);
+}
+
+/* 自定义按钮样式 */
+.ant-btn-primary {
+    background: var(--accent-teal);
+    border-color: var(--accent-teal);
+    font-weight: 500;
+    color: white;
+}
+
+.ant-btn-primary:hover {
+    background: #008a91;
+    border-color: #008a91;
+    color: white;
+}
+
+/* 自定义复选框样式 */
+.ant-checkbox-checked .ant-checkbox-inner {
+    background-color: var(--accent-teal);
+    border-color: var(--accent-teal);
+}
+
+.ant-checkbox:hover .ant-checkbox-inner {
+    border-color: var(--accent-teal);
+}
+
+/* 卡片样式优化 */
+.ant-card {
+    border-radius: 16px;
+    background: white;
+    border: 1px solid rgba(57, 62, 70, 0.1);
+}
+
+.ant-card-body {
+    padding: 32px;
+}
+
+/* 表格样式优化 */
+.ant-table-thead > tr > th {
+    background-color: var(--light-gray);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.ant-table-tbody > tr:hover > td {
+    background-color: rgba(22, 119, 255, 0.08) !important;
+}
+
+/* 搜索栏样式 */
+.ant-input {
+    border-color: rgba(57, 62, 70, 0.3);
+}
+
+.ant-input:hover {
+    border-color: var(--accent-teal);
+}
+
+/* 分割线样式 */
+.ant-divider-horizontal.ant-divider-with-text {
+    margin: 24px 0;
+    border-color: rgba(57, 62, 70, 0.2);
+}
+
+/* 自定义工具类 */
+.bg-primary-dark {
+    background-color: var(--primary-dark);
+}
+.bg-secondary-dark {
+    background-color: var(--secondary-dark);
+}
+.bg-accent-teal {
+    background-color: var(--accent-teal);
+}
+.bg-light-gray {
+    background-color: var(--light-gray);
+}
+
+.text-primary-dark {
+    color: var(--primary-dark);
+}
+.text-secondary-dark {
+    color: var(--secondary-dark);
+}
+.text-accent-teal {
+    color: var(--accent-teal);
+}
+.text-light-gray {
+    color: var(--light-gray);
+}
+
+.border-primary-dark {
+    border-color: var(--primary-dark);
+}
+.border-secondary-dark {
+    border-color: var(--secondary-dark);
+}
+.border-accent-teal {
+    border-color: var(--accent-teal);
+}
+.border-light-gray {
+    border-color: var(--light-gray);
+}
+
+/* 响应式优化 */
+@media (max-width: 1024px) {
+    .ant-card-body {
+        padding: 24px;
+    }
+}
+
+@media (max-width: 640px) {
+    .ant-card-body {
+        padding: 20px;
+    }
+}
+
+/* 防止样式闪烁 */
+* {
+    box-sizing: border-box;
+}
+
+html {
+    line-height: 1.15;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: inherit;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 防止 FOUC (Flash of Unstyled Content) */
+.ant-spin-container {
+    transition: opacity 0.3s;
+}
+
+/* 确保表格样式稳定 */
+.ant-table {
+    font-size: inherit;
+}
+
+.ant-table-thead > tr > th {
+    background: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* 防止按钮样式闪烁 */
+.ant-btn {
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+/* 输入框样式稳定 */
+.ant-input {
+    transition: all 0.3s;
+}
+
+/* 防止日期选择器样式闪烁 */
+.ant-picker {
+    transition: all 0.3s;
+}
+
+/* 防止下拉框样式闪烁 */
+.ant-select {
+    transition: all 0.3s;
 }
