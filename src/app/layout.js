@@ -3,7 +3,7 @@
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import zhCN from "antd/locale/zh_CN";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, App } from "antd";
 import ReactQueryProvider from "@/lib/react-query-provider";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -36,7 +36,7 @@ export default function RootLayout({ children }) {
                 <title>EHS</title>
                 <meta name="description" content="8BU—EHS" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <link rel="icon" href="/src/app/favicon.ico" />
+                <link rel="icon" href="/favicon.ico" />
             </head>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <ConfigProvider
@@ -44,10 +44,23 @@ export default function RootLayout({ children }) {
                     theme={{
                         cssVar: true,
                         hashed: false,
+                        components: {
+                            Segmented: {
+                                itemSelectedColor: "#ffffff",
+                                itemSelectedBg: "#2e6ef5",
+                                trackPadding: 4,
+                            },
+                            Card: {
+                                headerHeight: 40,
+                                headerPadding: 12,
+                            },
+                        },
                     }}
                 >
                     <AntdRegistry>
-                        <ReactQueryProvider>{children}</ReactQueryProvider>
+                        <App>
+                            <ReactQueryProvider>{children}</ReactQueryProvider>
+                        </App>
                     </AntdRegistry>
                 </ConfigProvider>
             </body>

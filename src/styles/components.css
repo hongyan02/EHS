@@ -1,0 +1,231 @@
+/**
+ * 通用组件样式
+ */
+
+/* 危险源相关样式 */
+.danger-source-layout {
+    @apply h-full flex flex-col p-6 gap-4;
+    background: var(--background);
+    color: var(--foreground);
+}
+
+.danger-source-card {
+    @apply flex-1 flex flex-col border rounded-lg shadow-sm;
+    background: var(--card-background, #fff);
+    border-color: var(--border, #e5e7eb);
+}
+
+.danger-source-header {
+    @apply flex items-center justify-between p-4 border-b;
+    border-color: var(--border, #e5e7eb);
+}
+
+.danger-source-content {
+    @apply flex-1 p-4 overflow-hidden;
+}
+
+/* 抽屉样式 */
+.custom-drawer .ant-drawer-header {
+    @apply border-b;
+    border-color: var(--border, #e5e7eb);
+}
+
+.custom-drawer .ant-drawer-body {
+    @apply p-0;
+}
+
+.drawer-header {
+    @apply flex items-center justify-between p-4 border-b bg-gray-50;
+    border-color: var(--border, #e5e7eb);
+}
+
+.drawer-content {
+    @apply flex-1 overflow-auto;
+}
+
+/* 风险标签样式 */
+.risk-tag {
+    @apply inline-flex items-center px-2 py-1 rounded text-xs font-medium;
+}
+
+.risk-tag-low {
+    @apply bg-green-100 text-green-800;
+}
+
+.risk-tag-medium {
+    @apply bg-yellow-100 text-yellow-800;
+}
+
+.risk-tag-high {
+    @apply bg-orange-100 text-orange-800;
+}
+
+.risk-tag-critical {
+    @apply bg-red-100 text-red-800;
+}
+
+.major-risk-tag {
+    @apply bg-red-500 text-white;
+}
+
+/* 表格样式 */
+.custom-table {
+    @apply border rounded-lg overflow-hidden;
+    border-color: var(--border, #e5e7eb);
+}
+
+.custom-table .ant-table-thead > tr > th {
+    @apply bg-gray-50 font-semibold;
+    color: var(--foreground, #374151);
+    border-color: var(--border, #e5e7eb);
+}
+
+.custom-table .ant-table-tbody > tr > td {
+    border-color: var(--border, #e5e7eb);
+}
+
+.custom-table .ant-table-tbody > tr:hover > td {
+    @apply bg-gray-50;
+}
+
+/* 搜索栏样式 */
+.search-bar {
+    @apply flex items-center gap-3 w-full;
+}
+
+.search-input {
+    @apply flex-1 max-w-lg;
+}
+
+.search-actions {
+    @apply flex items-center gap-2;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    @apply bg-blue-500 hover:bg-blue-600 border-blue-500 hover:border-blue-600 text-white;
+}
+
+.btn-success {
+    @apply bg-green-500 hover:bg-green-600 border-green-500 hover:border-green-600 text-white;
+}
+
+.btn-danger {
+    @apply bg-red-500 hover:bg-red-600 border-red-500 hover:border-red-600 text-white;
+}
+
+.btn-outline {
+    @apply border border-gray-300 bg-white hover:bg-gray-50 text-gray-700;
+}
+
+/* 表单样式 */
+.form-group {
+    @apply mb-4;
+}
+
+.form-group-title {
+    @apply text-lg font-semibold mb-3 text-gray-800;
+}
+
+.form-actions {
+    @apply flex justify-end gap-2 pt-4 border-t border-gray-200 bg-white sticky bottom-0;
+}
+
+/* 卡片样式 */
+.info-card {
+    @apply border rounded-lg p-4 bg-white shadow-sm;
+    border-color: var(--border, #e5e7eb);
+}
+
+.info-card-header {
+    @apply font-semibold text-gray-800 mb-2;
+}
+
+.info-card-content {
+    @apply text-gray-600 text-sm;
+}
+
+/* 统计卡片样式 */
+.stat-card {
+    @apply bg-white border rounded-lg p-4 shadow-sm;
+    border-color: var(--border, #e5e7eb);
+}
+
+.stat-number {
+    @apply text-2xl font-bold text-blue-600;
+}
+
+.stat-label {
+    @apply text-sm text-gray-500 mt-1;
+}
+
+/* 加载状态样式 */
+.loading-container {
+    @apply flex items-center justify-center h-64;
+}
+
+.loading-spinner {
+    @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500;
+}
+
+/* 空状态样式 */
+.empty-state {
+    @apply flex flex-col items-center justify-center h-64 text-gray-500;
+}
+
+.empty-icon {
+    @apply text-4xl mb-2;
+}
+
+.empty-text {
+    @apply text-sm;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .danger-source-layout {
+        @apply p-4 gap-3;
+    }
+
+    .search-bar {
+        @apply flex-col gap-2;
+    }
+
+    .search-input {
+        @apply max-w-none;
+    }
+
+    .form-actions {
+        @apply flex-col gap-2;
+    }
+}
+
+/* 动画效果 */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+    }
+}

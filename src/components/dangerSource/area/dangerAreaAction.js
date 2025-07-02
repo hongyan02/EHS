@@ -1,25 +1,56 @@
 "use client";
 import { useState } from "react";
-import { Button, Modal, Input, message } from "antd";
+import { Button, Modal, Input } from "antd";
 import { PlusOutlined, SearchOutlined, ReloadOutlined } from "@ant-design/icons";
-import DangerSourceForm from "./danger-source-form";
-import useDangerSourceStore from "@/store/danger-source-store";
-import { useAddDangerSourceMutation } from "@/hooks/use-danger-source-query";
+import BaseForm from "@/components/common/BaseForm";
+import { areaFormFields } from "@/config/formFields";
+import { useCreateAreaMutation, useUpdateAreaMutation } from "@/hooks/useAreaQuery";
+import useDangerAreaStore from "@/store/dangerAreaStore";
 
 /**
- * 危险源操作栏组件
+ * 危险区域操作栏组件
  * @param {Object} props - 组件属性
  * @param {Function} props.onDataChange - 数据变更回调函数
- * @returns {JSX.Element} 危险源操作栏组件
+ * @returns {JSX.Element} 危险区域操作栏组件
  */
-export default function DangerSourceActionBar({ onDataChange }) {
-    const { searchParams, setSearchParams, resetSearchParams, setLoading } = useDangerSourceStore();
+export default function DangerAreaActionBar({ onDataChange }) {
+    const {
+        searchParams,
+        setSearchParams,
+        resetSearchParams,
+        setLoading,
+        modalVisible,
+        editingItem,
+        openModal,
+        closeModal,
+    } = useDangerAreaStore();
 
-    const [searchKeyword, setSearchKeyword] = useState(searchParams.keyword);
-    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [searchKeyword, setSearchKeyword] = useState(searchParams.keyword || "");
 
-    // 使用mutation hook
-    const addMutation = useAddDangerSourceMutation();
+    // 判断是否为编辑模式
+    const isEditMode = !!editingItem;
+
+    // 创建区域的mutation
+    const createAreaMutation = useCreateAreaMutation({
+        onSuccess: () => {
+            closeModal();
+            // 通知父组件数据已变更
+            if (onDataChange) {
+                onDataChange();
+            }
+        },
+    });
+
+    // 更新区域的mutation
+    const updateAreaMutation = useUpdateAreaMutation({
+        onSuccess: () => {
+            closeModal();
+            // 通知父组件数据已变更
+            if (onDataChange) {
+                onDataChange();
+            }
+        },
+    });
 
     /**
      * 处理搜索
@@ -27,6 +58,7 @@ export default function DangerSourceActionBar({ onDataChange }) {
     const _handleSearch = () => {
         setLoading(true);
         setSearchParams({ keyword: searchKeyword.trim() });
+        console.log("搜索区域:", searchKeyword.trim());
     };
 
     /**
@@ -36,6 +68,7 @@ export default function DangerSourceActionBar({ onDataChange }) {
         setSearchKeyword("");
         setLoading(true);
         resetSearchParams();
+        console.log("重置区域搜索");
     };
 
     /**
@@ -51,31 +84,31 @@ export default function DangerSourceActionBar({ onDataChange }) {
      * 显示新增表单
      */
     const _showModal = () => {
-        setIsModalVisible(true);
+        openModal();
     };
 
     /**
      * 隐藏表单
      */
     const _hideModal = () => {
-        setIsModalVisible(false);
+        closeModal();
     };
 
     /**
      * 处理表单提交
      */
     const _handleSubmit = async (values) => {
-        try {
-            await addMutation.mutateAsync(values);
-            message.success("危险源新增成功！");
-            _hideModal();
+        console.log("提交区域数据:", values);
 
-            // 通知父组件数据已变更
-            if (onDataChange) {
-                onDataChange();
-            }
-        } catch (error) {
-            message.error("新增失败，请重试！");
+        if (isEditMode) {
+            // 编辑模式
+            updateAreaMutation.mutate({
+                areaId: editingItem.areaId,
+                data: values,
+            });
+        } else {
+            // 新增模式
+            createAreaMutation.mutate(values);
         }
     };
 
@@ -85,7 +118,7 @@ export default function DangerSourceActionBar({ onDataChange }) {
                 {/* 左侧：搜索区域 */}
                 <div className="flex items-center gap-3 flex-1 max-w-lg">
                     <Input
-                        placeholder="搜索危险源..."
+                        placeholder="搜索区域..."
                         value={searchKeyword}
                         onChange={(e) => setSearchKeyword(e.target.value)}
                         onPressEnter={_handleKeyPress}
@@ -122,33 +155,35 @@ export default function DangerSourceActionBar({ onDataChange }) {
                         icon={<PlusOutlined />}
                         size="large"
                         onClick={_showModal}
-                        className="bg-green-500 hover:bg-green-600 border-green-500 hover:border-green-600"
+                        className="bg-blue-500 hover:bg-blue-600 border-blue-500 hover:border-blue-600"
                     >
-                        新增危险源
+                        新增区域
                     </Button>
                 </div>
             </div>
 
-            {/* 新增表单模态框 */}
+            {/* 新增/编辑表单模态框 */}
             <Modal
                 title={
                     <div className="flex items-center gap-2">
-                        <PlusOutlined className="text-green-500" />
-                        新增危险源
+                        {isEditMode ? "编辑区域" : "新增区域"}
                     </div>
                 }
-                open={isModalVisible}
+                open={modalVisible}
                 onCancel={_hideModal}
                 footer={null}
-                width={1200}
+                width={600}
                 destroyOnHidden
                 centered
                 maskClosable={false}
             >
-                <DangerSourceForm
+                <BaseForm
+                    fields={areaFormFields}
+                    initialValues={isEditMode ? editingItem : {}}
                     onSubmit={_handleSubmit}
                     onCancel={_hideModal}
-                    loading={addMutation.isPending}
+                    loading={createAreaMutation.isPending || updateAreaMutation.isPending}
+                    submitText={isEditMode ? "更新区域" : "新增区域"}
                 />
             </Modal>
         </>
