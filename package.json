@@ -1,23 +1,46 @@
 {
-  "name": "ehs",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "next": "15.3.5"
-  },
-  "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "eslint": "^9",
-    "eslint-config-next": "15.3.5",
-    "@eslint/eslintrc": "^3"
-  }
+    "name": "ehs",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start -p 6030",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@ant-design/nextjs-registry": "^1.0.2",
+        "@ant-design/v5-patch-for-react-19": "^1.0.3",
+        "@floating-ui/react": "^0.27.13",
+        "@tanstack/react-query": "^5.81.5",
+        "@tiptap/extension-highlight": "^2.25.0",
+        "@tiptap/extension-image": "^2.25.0",
+        "@tiptap/extension-link": "^2.25.0",
+        "@tiptap/extension-subscript": "^2.25.0",
+        "@tiptap/extension-superscript": "^2.25.0",
+        "@tiptap/extension-task-item": "^2.25.0",
+        "@tiptap/extension-task-list": "^2.25.0",
+        "@tiptap/extension-text-align": "^2.25.0",
+        "@tiptap/extension-typography": "^2.25.0",
+        "@tiptap/extension-underline": "^2.25.0",
+        "@tiptap/pm": "^2.25.0",
+        "@tiptap/react": "^2.25.0",
+        "@tiptap/starter-kit": "^2.25.0",
+        "antd": "^5.26.3",
+        "echarts": "^5.6.0",
+        "echarts-for-react": "^3.0.2",
+        "next": "15.3.5",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "xlsx": "^0.18.5",
+        "zustand": "^5.0.6"
+    },
+    "devDependencies": {
+        "@eslint/eslintrc": "^3",
+        "@tailwindcss/postcss": "^4",
+        "eslint": "^9",
+        "eslint-config-next": "15.3.5",
+        "sass": "^1.89.2",
+        "tailwindcss": "^4"
+    }
 }
