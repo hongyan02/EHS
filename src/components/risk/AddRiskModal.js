@@ -251,11 +251,7 @@ export default function AddRiskModal({
                                 label="产品系列"
                                 rules={[{ required: true, message: "请输入产品系列" }]}
                             >
-                                <Input
-                                    placeholder="请输入产品系列"
-                                    defaultValue="储能"
-                                    size="large"
-                                />
+                                <Input placeholder="请输入产品系列" size="large" />
                             </Form.Item>
                             <Form.Item
                                 name="department"
@@ -464,6 +460,7 @@ export default function AddRiskModal({
                 scrollToFirstError
                 size="small"
                 initialValues={{
+                    product: "储能",
                     l: 1,
                     s: 1,
                     isMajorRisk: false,
