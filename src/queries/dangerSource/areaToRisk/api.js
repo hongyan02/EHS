@@ -1,12 +1,12 @@
+const base_url = "http://10.22.161.69:3260";
+
 /**
  * 获取区域风险源
  * @param {string} areaId 区域ID
  * @returns {Promise<Array>} 区域风险源列表
  */
 export const getAreaToRisk = async (areaId) => {
-    const response = await fetch(
-        `http://10.22.161.69:3260/v1/risk-mappings/area/${areaId}/risk-sources`
-    );
+    const response = await fetch(`${base_url}/v1/risk-mappings/area/${areaId}/risk-sources`);
     if (!response.ok) {
         throw new Error(`HTTP 错误: ${response.status}`);
     }
@@ -27,7 +27,7 @@ export const batchAreaToRisk = async (areaId, riskSourceIds) => {
         risk_source_id: riskSourceId,
     }));
 
-    const response = await fetch(`http://10.22.161.69:3260/v1/risk-mappings/batch`, {
+    const response = await fetch(`${base_url}/v1/risk-mappings/batch`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
