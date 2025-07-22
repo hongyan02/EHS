@@ -1,9 +1,10 @@
+const base_url = "http://10.22.161.69:3260";
 /**
  * 获取风险源列表
  * @returns 风险源列表
  */
 export const getRiskSourceList = async () => {
-    const response = await fetch("http://10.22.161.69:3260/v1/risk-sources", {
+    const response = await fetch(`${base_url}/v1/risk-sources`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -21,7 +22,7 @@ export const getRiskSourceList = async () => {
  * @returns 添加风险源
  */
 export const addRiskSource = async (data) => {
-    const response = await fetch("http://10.22.161.69:3260/v1/risk-sources/create", {
+    const response = await fetch(`${base_url}/v1/risk-sources/create`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -41,7 +42,7 @@ export const addRiskSource = async (data) => {
  * @returns 删除结果
  */
 export const deleteRiskSource = async (riskSourceId) => {
-    const response = await fetch(`http://10.22.161.69:3260/v1/risk-sources/${riskSourceId}`, {
+    const response = await fetch(`${base_url}/v1/risk-sources/${riskSourceId}`, {
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
@@ -61,7 +62,7 @@ export const deleteRiskSource = async (riskSourceId) => {
  * @returns 编辑风险源
  */
 export const editRiskSource = async (riskSourceId, data) => {
-    const response = await fetch(`http://10.22.161.69:3260/v1/risk-sources/${riskSourceId}`, {
+    const response = await fetch(`${base_url}/v1/risk-sources/${riskSourceId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -81,9 +82,7 @@ export const editRiskSource = async (riskSourceId, data) => {
  * @returns 风险源列表
  */
 export const searchRiskSource = async (keyword) => {
-    const response = await fetch(
-        `http://10.22.161.69:3260/v1/risk-sources/keyword?keyword=${keyword}`
-    );
+    const response = await fetch(`${base_url}/v1/risk-sources/keyword?keyword=${keyword}`);
     if (!response.ok) {
         throw new Error(`HTTP 错误: ${response.status}`);
     }

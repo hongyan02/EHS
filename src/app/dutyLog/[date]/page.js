@@ -15,7 +15,7 @@ dayjs.locale("zh-cn");
  */
 export default function DutyLogDetail({ params }) {
     const router = useRouter();
-    const { date } = params;
+    const { date } = React.use(params);
 
     // 模拟数据 - 实际应用中应该从API获取
     const dutyData = [

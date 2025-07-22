@@ -1,9 +1,11 @@
+const base_url = "http://10.22.161.69:3260";
+
 /**
  * 获取区域列表
  * @returns 区域列表
  */
 export const getAreaList = async (data) => {
-    const response = await fetch("http://10.22.161.69:3260/v1/danger-areas/page", {
+    const response = await fetch(`${base_url}/v1/danger-areas/page`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -23,7 +25,7 @@ export const getAreaList = async (data) => {
  * @returns 新增区域
  */
 export const addArea = async (data) => {
-    const response = await fetch("http://10.22.161.69:3260/v1/danger-areas", {
+    const response = await fetch(`${base_url}/v1/danger-areas`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -43,7 +45,7 @@ export const addArea = async (data) => {
  * @returns 更新区域
  */
 export const updateArea = async (data) => {
-    const response = await fetch(`http://10.22.161.69:3260/v1/danger-areas/${data.areaId}`, {
+    const response = await fetch(`${base_url}/v1/danger-areas/${data.areaId}`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
@@ -63,7 +65,7 @@ export const updateArea = async (data) => {
  * @returns 删除区域
  */
 export const deleteArea = async (areaId) => {
-    const response = await fetch(`http://10.22.161.69:3260/v1/danger-areas/${areaId}`, {
+    const response = await fetch(`${base_url}/v1/danger-areas/${areaId}`, {
         method: "DELETE",
     });
 };

@@ -1,4 +1,4 @@
-//上传文件 /v1/excel/upload-analyze
+const base_url = "http://10.22.161.69:3260";
 
 export const uploadExcel = async (fileList) => {
     const formData = new FormData();
@@ -10,7 +10,7 @@ export const uploadExcel = async (fileList) => {
         formData.append("file", fileObj);
     });
 
-    const response = await fetch("http://10.22.161.69:3260/v1/excel/upload-analyze", {
+    const response = await fetch(`${base_url}/v1/excel/upload-analyze`, {
         method: "POST",
         body: formData,
     });

@@ -61,7 +61,7 @@ export default function CollapseDate() {
                 style={{ width: 200 }}
                 format="YYYY年MM月"
             />
-            <Collapse items={items} defaultActiveKey={["1"]} size="small" />
+            <Collapse items={items} defaultActiveKey={[""]} size="small" />
         </Space>
     );
 }
