@@ -25,7 +25,7 @@ import { Spacer } from "@/components/tiptap-ui-primitive/spacer";
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from "@/components/tiptap-ui-primitive/toolbar";
 
 // --- Tiptap Node ---
-import { ImageUploadNode } from "@/components/tiptap-node/image-upload-node/image-upload-node-extension";
+import { ImageUploadNode } from "../../components/tiptap-node/image-upload-node/image-upload-node-extension";
 import "@/components/tiptap-node/code-block-node/code-block-node.scss";
 import "@/components/tiptap-node/list-node/list-node.scss";
 import "@/components/tiptap-node/image-node/image-node.scss";
@@ -61,7 +61,7 @@ import { useCursorVisibility } from "@/hooks/use-cursor-visibility";
 import { ThemeToggle } from "@/components/tiptap-templates/simple/theme-toggle";
 
 // --- Lib ---
-import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
+import { handleImageUpload, MAX_FILE_SIZE } from "../../lib/tiptap-utils";
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss";
@@ -217,7 +217,9 @@ function TipTapEditor({ content = "", onChange, className = "" }) {
     // If parent components need access to editor methods, they can be exposed via props
 
     return (
-        <div className={`flex-1 flex flex-col border border-gray-200 rounded-md overflow-hidden ${className}`}>
+        <div
+            className={`flex-1 flex flex-col border border-gray-200 rounded-md overflow-hidden ${className}`}
+        >
             <EditorContext.Provider value={{ editor }}>
                 <Toolbar
                     ref={toolbarRef}
@@ -243,12 +245,15 @@ function TipTapEditor({ content = "", onChange, className = "" }) {
                         />
                     )}
                 </Toolbar>
-                <div className="content-wrapper flex-1 overflow-y-auto" style={{ minHeight: 'auto' }}>
+                <div
+                    className="content-wrapper flex-1 overflow-y-auto"
+                    style={{ minHeight: "auto" }}
+                >
                     <EditorContent
                         editor={editor}
                         role="presentation"
                         className="simple-editor-content"
-                        style={{ maxWidth: 'none', minHeight: '100%' }}
+                        style={{ maxWidth: "none", minHeight: "100%" }}
                     />
                 </div>
             </EditorContext.Provider>
@@ -256,6 +261,6 @@ function TipTapEditor({ content = "", onChange, className = "" }) {
     );
 }
 
-TipTapEditor.displayName = 'TipTapEditor';
+TipTapEditor.displayName = "TipTapEditor";
 
 export default TipTapEditor;

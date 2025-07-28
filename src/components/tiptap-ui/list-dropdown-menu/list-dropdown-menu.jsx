@@ -10,10 +10,10 @@ import { ChevronDownIcon } from "@/components/tiptap-icons/chevron-down-icon"
 import { ListIcon } from "@/components/tiptap-icons/list-icon"
 
 // --- Lib ---
-import { isNodeInSchema } from "@/lib/tiptap-utils"
+import { isNodeInSchema } from "../../../lib/tiptap-utils"
 
 // --- Tiptap UI ---
-import { ListButton, canToggleList, isListActive, listOptions } from "@/components/tiptap-ui/list-button/list-button";
+import { ListButton, canToggleList, isListActive, listOptions } from "../../../components/tiptap-ui/list-button/list-button";
 
 import { Button } from "@/components/tiptap-ui-primitive/button"
 import {
