@@ -1,4 +1,4 @@
-const base_url = "http://10.22.161.69:3260";
+const base_url = "http://10.22.161.62:3260";
 
 export const uploadExcel = async (fileList) => {
     const formData = new FormData();

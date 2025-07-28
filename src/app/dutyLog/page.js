@@ -1,5 +1,6 @@
-import DutyTabs from "@/modules/dutyLog/dutyTabs";
-import DutyLogHeader from "@/modules/dutyLog/header";
+"use client";
+import DutyTabs from "../../modules/dutyLog/dutyTabs";
+import DutyLogHeader from "../../modules/dutyLog/header";
 
 export default function DutyLog() {
     return (

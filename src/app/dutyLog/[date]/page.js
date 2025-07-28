@@ -1,125 +1,129 @@
 "use client";
-import React from "react";
-import { Card, Descriptions, Button, Badge } from "antd";
-import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { useDutyLog } from "../../../hooks/use-duty-log";
 import dayjs from "dayjs";
-import "dayjs/locale/zh-cn";
+import { Card, Descriptions, Typography, Divider, Empty, Tag } from "antd";
+import { UserOutlined, PhoneOutlined, ClockCircleOutlined } from "@ant-design/icons";
 
-dayjs.locale("zh-cn");
+const { Title, Text } = Typography;
 
-/**
- * 值班日志详情页面
- * @param {Object} params - 路由参数
- * @returns {JSX.Element} 值班日志详情页面组件
- */
-export default function DutyLogDetail({ params }) {
-    const router = useRouter();
-    const { date } = React.use(params);
-
-    // 模拟数据 - 实际应用中应该从API获取
-    const dutyData = [
-        {
-            dutyDate: "2025-07-14",
-            dutyType: "白班",
-            dutyPerson: "张三",
-            dutyPhone: "13800138000",
-        },
-        {
-            dutyDate: "2025-07-14",
-            dutyType: "夜班",
-            dutyPerson: "李四",
-            dutyPhone: "13800138000",
-        },
-        {
-            dutyDate: "2025-07-15",
-            dutyType: "夜班",
-            dutyPerson: "李四",
-            dutyPhone: "13800138001",
-        },
-        {
-            dutyDate: "2025-07-16",
-            dutyType: "白班",
-            dutyPerson: "王五",
-            dutyPhone: "13800138002",
-        },
-    ];
-
-    // 获取当前日期的值班信息
-    const currentDutyData = dutyData.filter((item) => item.dutyDate === date);
-
+export default function DutyLogDetailPage() {
+    const params = useParams();
+    const date = params.date;
+    
+    // 使用当前月份来获取值班数据
+    const currentMonth = dayjs(date);
+    const { getDutyDataByDateAndShift } = useDutyLog(currentMonth);
+    
+    // 获取白班和夜班数据
+    const dayShiftData = getDutyDataByDateAndShift(date, "0");
+    const nightShiftData = getDutyDataByDateAndShift(date, "1");
+    
     // 格式化日期显示
-    const formattedDate = dayjs(date).format("YYYY年MM月DD日 dddd");
-
-    /**
-     * 返回上一页
-     */
-    const _handleGoBack = () => {
-        router.back();
-    };
-
-    return (
-        <div className="p-6 bg-white min-h-screen">
-            <div className="max-w-4xl mx-auto">
-                {/* 页面头部 */}
-                <div className="flex items-center mb-6">
-                    <Button
-                        type="text"
-                        icon={<ArrowLeftOutlined />}
-                        onClick={_handleGoBack}
-                        className="mr-4"
-                    >
-                        返回
-                    </Button>
-                    <h1 className="text-2xl font-bold text-gray-800">值班日志 - {formattedDate}</h1>
-                </div>
-
-                {/* 值班信息列表 */}
-                {currentDutyData.length > 0 ? (
-                    <div className="space-y-4">
-                        {currentDutyData.map((item, index) => (
-                            <Card
-                                key={`${item.dutyType}-${item.dutyPerson}-${index}`}
-                                title={
-                                    <div className="flex items-center">
-                                        <Badge
-                                            status={
-                                                item.dutyType === "白班" ? "processing" : "error"
-                                            }
-                                            text={item.dutyType}
-                                        />
-                                    </div>
-                                }
-                                className="shadow-sm"
-                            >
-                                <Descriptions bordered column={2}>
-                                    <Descriptions.Item label="值班人员">
-                                        {item.dutyPerson}
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="联系电话">
-                                        {item.dutyPhone}
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="值班日期">
-                                        {dayjs(item.dutyDate).format("YYYY-MM-DD")}
-                                    </Descriptions.Item>
-                                    <Descriptions.Item label="值班类型">
-                                        <Badge
-                                            status={
-                                                item.dutyType === "白班" ? "processing" : "error"
-                                            }
-                                            text={item.dutyType}
-                                        />
-                                    </Descriptions.Item>
-                                </Descriptions>
-                            </Card>
-                        ))}
-                    </div>
-                ) : (
-                    <Card className="text-center py-8">
-                        <div className="text-gray-500">
-                            <p className="text-lg mb-2">暂无值班安排</p>
-                            <p>选定日期：{formattedDate}</p>
+    const formatDate = dayjs(date).format("YYYY年MM月DD日");
+    const weekDay = dayjs(date).format("dddd");
+    
+    // 渲染员工信息
+    const renderEmployeeInfo = (employees, shiftType) => {
+        if (!employees || employees.length === 0) {
+            return (
+                <Empty 
+                    description={`暂无${shiftType}值班安排`}
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                />
+            );
+        }
+        
+        const positionMap = {
+            dayDutyLeader: "白班值班领导",
+            dayDutyManager: "白班值班经理", 
+            daySafetyManager: "白班安全经理",
+            daySafetyOfficer: "白班安全员",
+            nightDutyLeader: "夜班值班领导",
+            nightSafetyOfficer: "夜班安全员"
+        };
+        
+        return employees.map((employee, index) => (
+            <Card 
+                key={index}
+                size="small"
+                className="mb-3"
+                style={{ borderLeft: '4px solid #1890ff' }}
+            >
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                        <UserOutlined className="text-blue-500" />
+                        <div>
+                            <Text strong className="text-lg">
+                                {employee.employee_name}
+                            </Text>
+                            <br />
+                            <Tag color="blue">
+                                {positionMap[employee.position] || employee.position}
+                            </Tag>
                         </div>
+                    </div>
+                    {employee.phone && (
+                        <div className="flex items-center space-x-1 text-gray-600">
+                            <PhoneOutlined />
+                            <Text>{employee.phone}</Text>
+                        </div>
+                    )}
+                </div>
+            </Card>
+        ));
+    };
+    
+    return (
+        <div className="h-full w-full bg-gray-50 p-6">
+            <div className="max-w-4xl mx-auto">
+                {/* 页面标题 */}
+                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div className="text-center">
+                        <Title level={2} className="mb-2">
+                            <ClockCircleOutlined className="mr-2" />
+                            值班人员详情
+                        </Title>
+                        <Text className="text-lg text-gray-600">
+                            {formatDate} ({weekDay})
+                        </Text>
+                    </div>
+                </div>
+                
+                {/* 白班信息 */}
+                <Card 
+                    title={
+                        <div className="flex items-center">
+                            <div className="w-1 h-6 bg-orange-400 mr-3 rounded"></div>
+                            <span className="text-lg font-semibold">白班 (08:00 - 20:00)</span>
+                        </div>
+                    }
+                    className="mb-6"
+                    headStyle={{ backgroundColor: '#fff7e6', borderBottom: '1px solid #ffd591' }}
+                >
+                    {renderEmployeeInfo(dayShiftData?.employees, "白班")}
+                </Card>
+                
+                {/* 夜班信息 */}
+                <Card 
+                    title={
+                        <div className="flex items-center">
+                            <div className="w-1 h-6 bg-blue-500 mr-3 rounded"></div>
+                            <span className="text-lg font-semibold">夜班 (20:00 - 08:00)</span>
+                        </div>
+                    }
+                    headStyle={{ backgroundColor: '#e6f7ff', borderBottom: '1px solid #91d5ff' }}
+                >
+                    {renderEmployeeInfo(nightShiftData?.employees, "夜班")}
+                </Card>
+                
+                {/* 如果没有任何值班安排 */}
+                {!dayShiftData && !nightShiftData && (
+                    <Card>
+                        <Empty 
+                            description="当日暂无值班安排"
+                            image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        />
                     </Card>
                 )}
             </div>

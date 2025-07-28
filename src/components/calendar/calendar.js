@@ -4,6 +4,8 @@ import { Calendar, Badge, Button } from "antd";
 import { useRouter } from "next/navigation";
 import zhCN from "antd/locale/zh_CN";
 import "dayjs/locale/zh-cn";
+import dayjs from "dayjs";
+import { useDutyLogCalendarList } from "../../queries/dutyLog/calendar/index";
 
 /**
  * 值班日志日历组件
@@ -12,53 +14,20 @@ import "dayjs/locale/zh-cn";
 export default function DutyLogCalendar() {
     const router = useRouter();
     const [currentShift, setCurrentShift] = useState("day");
+    const [currentMonth, setCurrentMonth] = useState(dayjs());
 
-    const dutyData = [
-        {
-            dutyDate: "2025-07-14",
-            // 白班数据
-            dayDutyLeader: ["张三"],
-            dayDutyManager: ["李四"],
-            daySafetyManager: ["王五"],
-            daySafetyOfficer: ["赵六"],
-            // 夜班数据
-            nightDutyLeader: ["孙七"],
-            nightSafetyOfficer: ["周八"],
-        },
-        {
-            dutyDate: "2025-07-15",
-            // 白班数据
-            dayDutyLeader: ["刘九"],
-            dayDutyManager: ["陈十"],
-            daySafetyManager: [],
-            daySafetyOfficer: ["吴十一"],
-            // 夜班数据
-            nightDutyLeader: ["郑十二"],
-            nightSafetyOfficer: [],
-        },
-        {
-            dutyDate: "2025-07-16",
-            // 白班数据
-            dayDutyLeader: ["马十三"],
-            dayDutyManager: [],
-            daySafetyManager: ["朱十四"],
-            daySafetyOfficer: ["许十五"],
-            // 夜班数据
-            nightDutyLeader: [],
-            nightSafetyOfficer: ["何十六"],
-        },
-        {
-            dutyDate: "2025-07-17",
-            // 白班数据
-            dayDutyLeader: ["高十七", "林十八"],
-            dayDutyManager: ["谢十九"],
-            daySafetyManager: ["袁二十"],
-            daySafetyOfficer: [],
-            // 夜班数据
-            nightDutyLeader: ["钱二一"],
-            nightSafetyOfficer: ["孙二二", "李二三"],
-        },
-    ];
+    // 根据当前月份生成查询参数
+    const getQueryParams = (month) => {
+        const startDate = month.startOf('month').format('YYYY-MM-DD');
+        const endDate = month.endOf('month').format('YYYY-MM-DD');
+        return {
+            start_duty_date: startDate,
+            end_duty_date: endDate
+        };
+    };
+
+    // 使用API获取值班数据
+    const { data: dutyData = [], isLoading, error } = useDutyLogCalendarList(getQueryParams(currentMonth));
 
     /**
      * 获取指定日期的值班数据
@@ -67,7 +36,7 @@ export default function DutyLogCalendar() {
      */
     const _getListData = (value) => {
         const dateStr = value.format("YYYY-MM-DD");
-        return dutyData.filter((item) => item.dutyDate === dateStr);
+        return dutyData.filter((item) => item.duty_date === dateStr);
     };
 
     /**
@@ -77,20 +46,14 @@ export default function DutyLogCalendar() {
      */
     const _getMonthData = (value) => {
         const monthStr = value.format("YYYY-MM");
-        const monthData = dutyData.filter((item) => item.dutyDate.startsWith(monthStr));
+        const monthData = dutyData.filter((item) => item.duty_date.startsWith(monthStr));
         let totalCount = 0;
 
         monthData.forEach((item) => {
-            if (currentShift === "day") {
-                // 只统计白班岗位人数
-                totalCount += (item.dayDutyLeader || []).length;
-                totalCount += (item.dayDutyManager || []).length;
-                totalCount += (item.daySafetyManager || []).length;
-                totalCount += (item.daySafetyOfficer || []).length;
-            } else {
-                // 只统计夜班岗位人数
-                totalCount += (item.nightDutyLeader || []).length;
-                totalCount += (item.nightSafetyOfficer || []).length;
+            // 根据shift_type筛选班次："0"为白班，"1"为夜班
+            if ((currentShift === "day" && item.shift_type === "0") || 
+                (currentShift === "night" && item.shift_type === "1")) {
+                totalCount += (item.employees || []).length;
             }
         });
 
@@ -133,48 +96,43 @@ export default function DutyLogCalendar() {
         const dateData = _getListData(value);
         if (!dateData.length) return null;
 
-        const data = dateData[0]; // 取第一条数据
         const badgeItems = [];
 
-        // 白班岗位配置（蓝色Badge）
-        const dayShiftRoles = [
-            { key: "dayDutyLeader", label: "值班领导" },
-            { key: "dayDutyManager", label: "带班干部" },
-            { key: "daySafetyManager", label: "安全管理人员" },
-            { key: "daySafetyOfficer", label: "安全员" },
-        ];
+        // 根据当前班次筛选数据
+        const filteredData = dateData.filter(item => {
+            return (currentShift === "day" && item.shift_type === "0") || 
+                   (currentShift === "night" && item.shift_type === "1");
+        });
 
-        // 夜班岗位配置（红色Badge）
-        const nightShiftRoles = [
-            { key: "nightDutyLeader", label: "值班领导" },
-            { key: "nightSafetyOfficer", label: "安全员" },
-        ];
+        if (!filteredData.length) return null;
 
-        if (currentShift === "day") {
-            // 只显示白班岗位Badge
-            dayShiftRoles.forEach((role) => {
-                const personnel = data[role.key] || [];
-                personnel.forEach((person, index) => {
-                    badgeItems.push(
-                        <li key={`day-${role.key}-${index}`} className="text-xs leading-tight">
-                            <Badge status="processing" text={`${role.label}：${person}`} />
-                        </li>
-                    );
-                });
+        // 职位映射表
+        const positionLabels = {
+            // 白班职位
+            'dayDutyLeader': '值班领导',
+            'dayDutyManager': '带班干部',
+            'daySafetyManager': '安全管理人员',
+            'daySafetyOfficer': '安全员',
+            // 夜班职位
+            'nightDutyLeader': '值班领导',
+            'nightSafetyOfficer': '安全员'
+        };
+
+        // 渲染每个值班记录
+        filteredData.forEach((dutyItem, dutyIndex) => {
+            const employees = dutyItem.employees || [];
+            employees.forEach((employee, empIndex) => {
+                const badgeStatus = currentShift === "day" ? "processing" : "error";
+                const positionLabel = positionLabels[employee.position] || '职员';
+                const displayText = `${positionLabel}：${employee.employee_name}`;
+                
+                badgeItems.push(
+                    <li key={`${dutyIndex}-${empIndex}`} className="text-xs leading-tight">
+                        <Badge status={badgeStatus} text={displayText} />
+                    </li>
+                );
             });
-        } else {
-            // 只显示夜班岗位Badge
-            nightShiftRoles.forEach((role) => {
-                const personnel = data[role.key] || [];
-                personnel.forEach((person, index) => {
-                    badgeItems.push(
-                        <li key={`night-${role.key}-${index}`} className="text-xs leading-tight">
-                            <Badge status="error" text={`${role.label}：${person}`} />
-                        </li>
-                    );
-                });
-            });
-        }
+        });
 
         return (
             <div
@@ -205,6 +163,22 @@ export default function DutyLogCalendar() {
         setCurrentShift(currentShift === "day" ? "night" : "day");
     };
 
+    /**
+     * 处理月份变化
+     * @param {dayjs.Dayjs} date - 新的月份
+     */
+    const _handlePanelChange = (date) => {
+        setCurrentMonth(date);
+    };
+
+    if (isLoading) {
+        return <div className="text-center p-4">加载中...</div>;
+    }
+
+    if (error) {
+        return <div className="text-center p-4 text-red-500">加载失败：{error.message}</div>;
+    }
+
     return (
         <div className="space-y-4">
             <div className="flex justify-center">
@@ -223,7 +197,11 @@ export default function DutyLogCalendar() {
                     </span>
                 </Button>
             </div>
-            <Calendar locale={zhCN} cellRender={_cellRender} />
+            <Calendar 
+                locale={zhCN} 
+                cellRender={_cellRender} 
+                onPanelChange={_handlePanelChange}
+            />
         </div>
     );
 }
