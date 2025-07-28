@@ -1,6 +1,6 @@
 import { mergeAttributes, Node } from "@tiptap/react"
 import { ReactNodeViewRenderer } from "@tiptap/react"
-import { ImageUploadNode as ImageUploadNodeComponent } from "@/components/tiptap-node/image-upload-node/image-upload-node"
+import { ImageUploadNode as ImageUploadNodeComponent } from "./image-upload-node"
 
 /**
  * A TipTap node extension that creates an image upload component.

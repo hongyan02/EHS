@@ -37,20 +37,20 @@ export default function DutyLog() {
                 date: dateStr,
                 day: day,
                 weekday: weekday,
-                isToday: date.isSame(dayjs(), 'day'),
+                isToday: date.isSame(dayjs(), "day"),
                 // 这里可以添加实际的日志数据
                 logs: {
                     dayShift: {
                         recorder: "张三",
                         details: "设备运行正常，无异常情况",
-                        todos: ["检查设备运行状态", "填写运行记录"]
+                        todos: ["检查设备运行状态", "填写运行记录"],
                     },
                     nightShift: {
                         recorder: "李四",
                         details: "夜间巡检完成，发现A区域温度偏高",
-                        todos: ["调整A区域温控", "记录异常情况"]
-                    }
-                }
+                        todos: ["调整A区域温控", "记录异常情况"],
+                    },
+                },
             };
         });
     }, [selectedMonth]);
@@ -84,27 +84,29 @@ export default function DutyLog() {
                         <div key={item.key} className="relative flex items-start">
                             {/* 时间线左侧 - 日期信息 */}
                             <div className="flex-shrink-0 w-32 text-right pr-6">
-                                <div className={`text-lg font-semibold ${
-                                    item.isToday ? 'text-blue-600' : 'text-gray-800'
-                                }`}>
+                                <div
+                                    className={`text-lg font-semibold ${
+                                        item.isToday ? "text-blue-600" : "text-gray-800"
+                                    }`}
+                                >
                                     {item.day}日
                                 </div>
-                                <div className="text-sm text-gray-500">
-                                    {item.weekday}
-                                </div>
+                                <div className="text-sm text-gray-500">{item.weekday}</div>
                             </div>
 
                             {/* 时间线中间 - 圆点和连接线 */}
                             <div className="flex-shrink-0 flex flex-col items-center">
                                 {/* 圆点 */}
-                                <div className={`w-4 h-4 rounded-full border-2 ${
-                                    item.isToday 
-                                        ? 'bg-blue-600 border-blue-600' 
-                                        : item.logs.dayShift || item.logs.nightShift
-                                            ? 'bg-green-500 border-green-500'
-                                            : 'bg-gray-300 border-gray-300'
-                                }`}></div>
-                                
+                                <div
+                                    className={`w-4 h-4 rounded-full border-2 ${
+                                        item.isToday
+                                            ? "bg-blue-600 border-blue-600"
+                                            : item.logs.dayShift || item.logs.nightShift
+                                            ? "bg-green-500 border-green-500"
+                                            : "bg-gray-300 border-gray-300"
+                                    }`}
+                                ></div>
+
                                 {/* 连接线 - 除了最后一个项目 */}
                                 {index < timelineItems.length - 1 && (
                                     <div className="w-0.5 h-16 bg-gray-200 mt-2"></div>
@@ -117,7 +119,7 @@ export default function DutyLog() {
                                     {/* <div className="text-sm font-medium text-gray-800 mb-2">
                                         {selectedMonth.year()}年{selectedMonth.month() + 1}月{item.day}日
                                     </div> */}
-                                    
+
                                     {item.logs.dayShift || item.logs.nightShift ? (
                                         <div className="space-y-4">
                                             {/* 白班 */}
@@ -129,20 +131,39 @@ export default function DutyLog() {
                                                         </span>
                                                     </div>
                                                     <div className="space-y-2 text-sm">
-                                                        <div><span className="font-medium text-gray-600">记录人：</span>{item.logs.dayShift.recorder}</div>
-                                                        <div><span className="font-medium text-gray-600">详细日志：</span>{item.logs.dayShift.details}</div>
                                                         <div>
-                                                            <span className="font-medium text-gray-600">待办项：</span>
+                                                            <span className="font-medium text-gray-600">
+                                                                记录人：
+                                                            </span>
+                                                            {item.logs.dayShift.recorder}
+                                                        </div>
+                                                        <div>
+                                                            <span className="font-medium text-gray-600">
+                                                                详细日志：
+                                                            </span>
+                                                            {item.logs.dayShift.details}
+                                                        </div>
+                                                        <div>
+                                                            <span className="font-medium text-gray-600">
+                                                                待办项：
+                                                            </span>
                                                             <ul className="list-disc list-inside ml-4 mt-1">
-                                                                {item.logs.dayShift.todos.map((todo, todoIndex) => (
-                                                                    <li key={todoIndex} className="text-gray-700">{todo}</li>
-                                                                ))}
+                                                                {item.logs.dayShift.todos.map(
+                                                                    (todo, todoIndex) => (
+                                                                        <li
+                                                                            key={todoIndex}
+                                                                            className="text-gray-700"
+                                                                        >
+                                                                            {todo}
+                                                                        </li>
+                                                                    )
+                                                                )}
                                                             </ul>
                                                         </div>
                                                     </div>
                                                 </div>
                                             )}
-                                            
+
                                             {/* 夜班 */}
                                             {item.logs.nightShift && (
                                                 <div className="border-l-4 border-red-500 pl-4">
@@ -152,14 +173,33 @@ export default function DutyLog() {
                                                         </span>
                                                     </div>
                                                     <div className="space-y-2 text-sm">
-                                                        <div><span className="font-medium text-gray-600">记录人：</span>{item.logs.nightShift.recorder}</div>
-                                                        <div><span className="font-medium text-gray-600">详细日志：</span>{item.logs.nightShift.details}</div>
                                                         <div>
-                                                            <span className="font-medium text-gray-600">待办项：</span>
+                                                            <span className="font-medium text-gray-600">
+                                                                记录人：
+                                                            </span>
+                                                            {item.logs.nightShift.recorder}
+                                                        </div>
+                                                        <div>
+                                                            <span className="font-medium text-gray-600">
+                                                                详细日志：
+                                                            </span>
+                                                            {item.logs.nightShift.details}
+                                                        </div>
+                                                        <div>
+                                                            <span className="font-medium text-gray-600">
+                                                                待办项：
+                                                            </span>
                                                             <ul className="list-disc list-inside ml-4 mt-1">
-                                                                {item.logs.nightShift.todos.map((todo, todoIndex) => (
-                                                                    <li key={todoIndex} className="text-gray-700">{todo}</li>
-                                                                ))}
+                                                                {item.logs.nightShift.todos.map(
+                                                                    (todo, todoIndex) => (
+                                                                        <li
+                                                                            key={todoIndex}
+                                                                            className="text-gray-700"
+                                                                        >
+                                                                            {todo}
+                                                                        </li>
+                                                                    )
+                                                                )}
                                                             </ul>
                                                         </div>
                                                     </div>

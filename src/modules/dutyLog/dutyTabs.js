@@ -4,6 +4,7 @@ import DutyLogCalendar from "../../components/calendar/calendar.js";
 import CollapseDate from "./collapseDate.js";
 import LogForm from "../../components/calendar/LogForm.js";
 import DutyLog from "./dutyLog.js";
+import WriteLog from "./writeLog.js";
 
 /**
  * 值班选项卡组件
@@ -31,7 +32,7 @@ export default function DutyTabs() {
         {
             key: "4",
             label: "值班日志",
-            children: <LogForm />,
+            children: <WriteLog />,
         },
     ];
 

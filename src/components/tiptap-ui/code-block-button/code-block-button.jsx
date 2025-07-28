@@ -9,7 +9,7 @@ import { useTiptapEditor } from "@/hooks/use-tiptap-editor"
 import { CodeBlockIcon } from "@/components/tiptap-icons/code-block-icon"
 
 // --- Lib ---
-import { isNodeInSchema } from "@/lib/tiptap-utils"
+import { isNodeInSchema } from "../../../lib/tiptap-utils"
 
 import { Button } from "@/components/tiptap-ui-primitive/button"
 
