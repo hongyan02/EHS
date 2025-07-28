@@ -264,10 +264,10 @@ const DropZoneContent = ({ maxSize }) => (
 
     <div className="tiptap-image-upload-content">
       <span className="tiptap-image-upload-text">
-        <em>Click to upload</em> or drag and drop
+        <em>点击上传</em>或者拖动图片到此
       </span>
       <span className="tiptap-image-upload-subtext">
-        Maximum file size {maxSize / 1024 / 1024}MB.
+        最大文件大小 {maxSize / 1024 / 1024}MB.
       </span>
     </div>
   </>
@@ -305,6 +305,7 @@ export const ImageUploadNode = (props) => {
       const pos = props.getPos()
       const filename = files[0]?.name.replace(/\.[^/.]+$/, "") || "unknown"
 
+      // Insert the image into the editor
       props.editor
         .chain()
         .focus()
@@ -316,6 +317,9 @@ export const ImageUploadNode = (props) => {
           },
         ])
         .run()
+      
+      // Clear the upload state after successful insertion
+      clearFileItem()
     }
   }
 

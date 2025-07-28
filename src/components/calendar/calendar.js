@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Calendar, Badge, Button } from "antd";
+import { Calendar, Badge, Button,Empty } from "antd";
 import { useRouter } from "next/navigation";
 import zhCN from "antd/locale/zh_CN";
 import "dayjs/locale/zh-cn";
@@ -176,7 +176,7 @@ export default function DutyLogCalendar() {
     }
 
     if (error) {
-        return <div className="text-center p-4 text-red-500">加载失败：{error.message}</div>;
+        return <div className="text-center p-4 text-red-500"><Empty description="获取失败，请检查网络" /></div>;
     }
 
     return (

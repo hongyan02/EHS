@@ -1,6 +1,5 @@
 "use client";
-
-import * as React from "react";
+import React from "react";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
 
 // --- Tiptap Core Extensions ---
@@ -16,12 +15,12 @@ import { Superscript } from "@tiptap/extension-superscript";
 import { Underline } from "@tiptap/extension-underline";
 
 // --- Custom Extensions ---
-import { Link } from "@/tiptap-extension/link-extension";
-import { Selection } from "@/components/tiptap-extension/selection-extension";
-import { TrailingNode } from "@/components/tiptap-extension/trailing-node-extension";
+import { Link } from "@/components/tiptap-extension/link-extension.js";
+import { Selection } from "@/components/tiptap-extension/selection-extension.js";
+import { TrailingNode } from "@/components/tiptap-extension/trailing-node-extension.js";
 
 // --- UI Primitives ---
-import { Button } from "@/components/tiptap-ui-primitive/button";
+import { Button as TiptapButton } from "@/components/tiptap-ui-primitive/button";
 import { Spacer } from "@/components/tiptap-ui-primitive/spacer";
 import { Toolbar, ToolbarGroup, ToolbarSeparator } from "@/components/tiptap-ui-primitive/toolbar";
 
@@ -66,8 +65,6 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss";
-
-import content from "@/components/tiptap-templates/simple/data/content.json";
 
 const MainToolbarContent = ({ onHighlighterClick, onLinkClick, isMobile }) => {
     return (
@@ -126,14 +123,14 @@ const MainToolbarContent = ({ onHighlighterClick, onLinkClick, isMobile }) => {
 const MobileToolbarContent = ({ type, onBack }) => (
     <>
         <ToolbarGroup>
-            <Button data-style="ghost" onClick={onBack}>
+            <TiptapButton data-style="ghost" onClick={onBack}>
                 <ArrowLeftIcon className="tiptap-button-icon" />
                 {type === "highlighter" ? (
                     <HighlighterIcon className="tiptap-button-icon" />
                 ) : (
                     <LinkIcon className="tiptap-button-icon" />
                 )}
-            </Button>
+            </TiptapButton>
         </ToolbarGroup>
 
         <ToolbarSeparator />
@@ -142,12 +139,21 @@ const MobileToolbarContent = ({ type, onBack }) => (
     </>
 );
 
-export function SimpleEditor() {
+/**
+ * TipTap编辑器组件
+ * @param {Object} props - 组件属性
+ * @param {string} props.content - 初始内容
+ * @param {Function} props.onChange - 内容变化回调函数
+ * @param {string} props.className - 自定义样式类名
+ * @returns {JSX.Element} TipTap编辑器组件
+ */
+function TipTapEditor({ content = "", onChange, className = "" }) {
     const isMobile = useMobile();
     const windowSize = useWindowSize();
     const [mobileView, setMobileView] = React.useState("main");
     const toolbarRef = React.useRef(null);
 
+    // 初始化富文本编辑器
     const editor = useEditor({
         immediatelyRender: false,
         editorProps: {
@@ -181,7 +187,12 @@ export function SimpleEditor() {
             TrailingNode,
             Link.configure({ openOnClick: false }),
         ],
-        content: "",
+        content: content,
+        onUpdate: ({ editor }) => {
+            if (onChange) {
+                onChange(editor.getHTML());
+            }
+        },
     });
 
     const bodyRect = useCursorVisibility({
@@ -195,38 +206,56 @@ export function SimpleEditor() {
         }
     }, [isMobile, mobileView]);
 
+    // 当content prop变化时更新编辑器内容
+    React.useEffect(() => {
+        if (editor && content !== editor.getHTML()) {
+            editor.commands.setContent(content);
+        }
+    }, [editor, content]);
+
+    // Note: useImperativeHandle removed as it's not needed for this component
+    // If parent components need access to editor methods, they can be exposed via props
+
     return (
-        <EditorContext.Provider value={{ editor }}>
-            <Toolbar
-                ref={toolbarRef}
-                style={
-                    isMobile
-                        ? {
-                              bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`,
-                          }
-                        : {}
-                }
-            >
-                {mobileView === "main" ? (
-                    <MainToolbarContent
-                        onHighlighterClick={() => setMobileView("highlighter")}
-                        onLinkClick={() => setMobileView("link")}
-                        isMobile={isMobile}
+        <div className={`flex-1 flex flex-col border border-gray-200 rounded-md overflow-hidden ${className}`}>
+            <EditorContext.Provider value={{ editor }}>
+                <Toolbar
+                    ref={toolbarRef}
+                    className="flex-shrink-0"
+                    style={
+                        isMobile
+                            ? {
+                                  bottom: `calc(100% - ${windowSize.height - bodyRect.y}px)`,
+                              }
+                            : {}
+                    }
+                >
+                    {mobileView === "main" ? (
+                        <MainToolbarContent
+                            onHighlighterClick={() => setMobileView("highlighter")}
+                            onLinkClick={() => setMobileView("link")}
+                            isMobile={isMobile}
+                        />
+                    ) : (
+                        <MobileToolbarContent
+                            type={mobileView === "highlighter" ? "highlighter" : "link"}
+                            onBack={() => setMobileView("main")}
+                        />
+                    )}
+                </Toolbar>
+                <div className="content-wrapper flex-1 overflow-y-auto" style={{ minHeight: 'auto' }}>
+                    <EditorContent
+                        editor={editor}
+                        role="presentation"
+                        className="simple-editor-content"
+                        style={{ maxWidth: 'none', minHeight: '100%' }}
                     />
-                ) : (
-                    <MobileToolbarContent
-                        type={mobileView === "highlighter" ? "highlighter" : "link"}
-                        onBack={() => setMobileView("main")}
-                    />
-                )}
-            </Toolbar>
-            <div className="content-wrapper">
-                <EditorContent
-                    editor={editor}
-                    role="presentation"
-                    className="simple-editor-content"
-                />
-            </div>
-        </EditorContext.Provider>
+                </div>
+            </EditorContext.Provider>
+        </div>
     );
 }
+
+TipTapEditor.displayName = 'TipTapEditor';
+
+export default TipTapEditor;

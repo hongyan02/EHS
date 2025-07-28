@@ -124,19 +124,22 @@ export const handleImageUpload = async (file, onProgress, abortSignal) => {
         throw new Error(`File size exceeds maximum allowed (${MAX_FILE_SIZE / (1024 * 1024)}MB)`);
     }
 
-    // For demo/testing: Simulate upload progress
-    for (let progress = 0; progress <= 100; progress += 10) {
+    // Simulate upload progress for base64 conversion
+    for (let progress = 0; progress <= 90; progress += 10) {
         if (abortSignal?.aborted) {
             throw new Error("Upload cancelled");
         }
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 100));
         onProgress?.({ progress });
     }
 
-    return "/images/placeholder-image.png";
-
-    // Uncomment for production use:
-    // return convertFileToBase64(file, abortSignal);
+    // Convert file to base64 for immediate display
+    const base64Url = await convertFileToBase64(file, abortSignal);
+    
+    // Complete progress
+    onProgress?.({ progress: 100 });
+    
+    return base64Url;
 };
 
 /**
