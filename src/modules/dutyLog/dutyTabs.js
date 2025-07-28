@@ -2,6 +2,8 @@
 import { Tabs } from "antd";
 import DutyLogCalendar from "../../components/calendar/calendar.js";
 import CollapseDate from "./collapseDate.js";
+import LogForm from "../../components/calendar/LogForm.js";
+import DutyLog from "./dutyLog.js";
 
 /**
  * 值班选项卡组件
@@ -19,7 +21,7 @@ export default function DutyTabs() {
         {
             key: "2",
             label: "值班记录",
-            children: <div>值班记录</div>,
+            children: <DutyLog />,
         },
         {
             key: "3",
@@ -29,7 +31,7 @@ export default function DutyTabs() {
         {
             key: "4",
             label: "值班日志",
-            children: <div>值班日志</div>,
+            children: <LogForm />,
         },
     ];
 
