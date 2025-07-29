@@ -19,7 +19,6 @@ export default function CollapseDate() {
 
     // 使用自定义hook管理值班表逻辑
     const {
-        showDutyForm,
         finalData,
         getDayShiftInitialValues,
         getNightShiftInitialValues,
@@ -74,7 +73,7 @@ export default function CollapseDate() {
                 children: (
                     <div className="flex flex-col gap-6">
                         {/* 白班部分 */}
-                        {hasDayShift || showDutyForm[dateStr] ? (
+                        {hasDayShift ? (
                             <>
                                 <DayShiftForm
                                     date={dateStr}
@@ -139,7 +138,6 @@ export default function CollapseDate() {
         });
     }, [
         selectedMonth,
-        showDutyForm,
         // handleAddDutySchedule,
         handleAddDayShiftSchedule,
         handleAddNightShiftSchedule,

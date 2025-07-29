@@ -65,3 +65,19 @@ export const deleteDutyLog = async (id) => {
     const result = await response.json();
     return result;
 };
+
+//查询日志
+export const getDutyLogs = async (data) => {
+    const response = await fetch(`${base_url}/v1/duty-logs/query`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+        throw new Error(`HTTP 错误: ${response.status}`);
+    }
+    const result = await response.json();
+    return result;
+};

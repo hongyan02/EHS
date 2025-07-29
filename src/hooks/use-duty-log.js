@@ -29,7 +29,10 @@ export const useDutyLog = (selectedMonth) => {
     }, []);
 
     // 生成查询参数
-    const queryParams = useMemo(() => getQueryParams(selectedMonth), [selectedMonth, getQueryParams]);
+    const queryParams = useMemo(
+        () => getQueryParams(selectedMonth),
+        [selectedMonth, getQueryParams]
+    );
 
     // 使用hook获取数据，让React Query自动处理缓存
     const { data: dutyData = [] } = useDutyLogCalendarList(queryParams);
@@ -44,23 +47,23 @@ export const useDutyLog = (selectedMonth) => {
      */
     const getDayShiftInitialValues = useCallback((employees) => {
         if (!Array.isArray(employees)) return {};
-        
+
         const values = {};
-        employees.forEach(emp => {
+        employees.forEach((emp) => {
             switch (emp.position) {
-                case 'dayDutyLeader':
+                case "dayDutyLeader":
                     values.dayDutyLeader = emp.employee_name;
                     values.dayDutyLeaderPhone = emp.phone;
                     break;
-                case 'dayDutyManager':
+                case "dayDutyManager":
                     values.dayDutyManager = emp.employee_name;
                     values.dayDutyManagerPhone = emp.phone;
                     break;
-                case 'daySafetyManager':
+                case "daySafetyManager":
                     values.daySafetyManager = emp.employee_name;
                     values.daySafetyManagerPhone = emp.phone;
                     break;
-                case 'daySafetyOfficer':
+                case "daySafetyOfficer":
                     values.daySafetyOfficer = emp.employee_name;
                     values.daySafetyOfficerPhone = emp.phone;
                     break;
@@ -76,15 +79,15 @@ export const useDutyLog = (selectedMonth) => {
      */
     const getNightShiftInitialValues = useCallback((employees) => {
         if (!Array.isArray(employees)) return {};
-        
+
         const values = {};
-        employees.forEach(emp => {
+        employees.forEach((emp) => {
             switch (emp.position) {
-                case 'nightDutyLeader':
+                case "nightDutyLeader":
                     values.nightDutyLeader = emp.employee_name;
                     values.nightDutyLeaderPhone = emp.phone;
                     break;
-                case 'nightSafetyOfficer':
+                case "nightSafetyOfficer":
                     values.nightSafetyOfficer = emp.employee_name;
                     values.nightSafetyOfficerPhone = emp.phone;
                     break;
@@ -98,9 +101,12 @@ export const useDutyLog = (selectedMonth) => {
      * @param {string} dateStr - 日期字符串
      * @returns {Object|null} 值班数据
      */
-    const getDutyDataByDate = useCallback((dateStr) => {
-        return finalData.find(item => item.duty_date === dateStr) || null;
-    }, [finalData]);
+    const getDutyDataByDate = useCallback(
+        (dateStr) => {
+            return finalData.find((item) => item.duty_date === dateStr) || null;
+        },
+        [finalData]
+    );
 
     /**
      * 获取指定日期和班次的值班数据
@@ -108,9 +114,16 @@ export const useDutyLog = (selectedMonth) => {
      * @param {string} shiftType - 班次类型 "0"=白班, "1"=夜班
      * @returns {Object|null} 值班数据
      */
-    const getDutyDataByDateAndShift = useCallback((dateStr, shiftType) => {
-        return finalData.find(item => item.duty_date === dateStr && item.shift_type === shiftType) || null;
-    }, [finalData]);
+    const getDutyDataByDateAndShift = useCallback(
+        (dateStr, shiftType) => {
+            return (
+                finalData.find(
+                    (item) => item.duty_date === dateStr && item.shift_type === shiftType
+                ) || null
+            );
+        },
+        [finalData]
+    );
 
     /**
      * 检查指定日期是否有值班表
@@ -131,7 +144,10 @@ export const useDutyLog = (selectedMonth) => {
      */
     const hasDayShiftSchedule = useCallback(
         (dateStr) => {
-            return Array.isArray(finalData) && finalData.some((item) => item.duty_date === dateStr && item.shift_type === "0");
+            return (
+                Array.isArray(finalData) &&
+                finalData.some((item) => item.duty_date === dateStr && item.shift_type === "0")
+            );
         },
         [finalData]
     );
@@ -143,7 +159,10 @@ export const useDutyLog = (selectedMonth) => {
      */
     const hasNightShiftSchedule = useCallback(
         (dateStr) => {
-            return Array.isArray(finalData) && finalData.some((item) => item.duty_date === dateStr && item.shift_type === "1");
+            return (
+                Array.isArray(finalData) &&
+                finalData.some((item) => item.duty_date === dateStr && item.shift_type === "1")
+            );
         },
         [finalData]
     );
@@ -171,15 +190,15 @@ export const useDutyLog = (selectedMonth) => {
             createDutyLogMutation.mutate(dutyData, {
                 onSuccess: () => {
                     // 创建成功
-                    message.success('白班值班表创建成功');
+                    message.success("白班值班表创建成功");
                 },
                 onError: (error) => {
                     console.error("创建白班值班表失败:", error);
-                    message.error('创建白班值班表失败，请重试');
+                    message.error("创建白班值班表失败，请重试");
                 },
             });
         },
-        [createDutyLogMutation]
+        [createDutyLogMutation, message]
     );
 
     /**
@@ -205,15 +224,15 @@ export const useDutyLog = (selectedMonth) => {
             createDutyLogMutation.mutate(dutyData, {
                 onSuccess: () => {
                     // 创建成功
-                    message.success('夜班值班表创建成功');
+                    message.success("夜班值班表创建成功");
                 },
                 onError: (error) => {
                     console.error("创建夜班值班表失败:", error);
-                    message.error('创建夜班值班表失败，请重试');
+                    message.error("创建夜班值班表失败，请重试");
                 },
             });
         },
-        [createDutyLogMutation,message]
+        [createDutyLogMutation, message]
     );
 
     /**
@@ -232,110 +251,140 @@ export const useDutyLog = (selectedMonth) => {
      * @param {string} date - 日期字符串
      * @param {Object} values - 表单数据
      */
-    const handleSaveDayShift = useCallback((date, values) => {
-        // 从缓存中查找对应日期的白班值班表记录
-        const dutyRecord = getDutyDataByDateAndShift(date, "0");
-        if (!dutyRecord) {
-            console.error('未找到对应日期的白班值班表记录');
-            return;
-        }
-
-        // 构建employees数组
-        const employees = [];
-        
-        // 处理白班各个岗位的人员信息
-        const positions = [
-            { field: 'dayDutyLeader', phoneField: 'dayDutyLeaderPhone', position: 'dayDutyLeader' },
-            { field: 'dayDutyManager', phoneField: 'dayDutyManagerPhone', position: 'dayDutyManager' },
-            { field: 'daySafetyManager', phoneField: 'daySafetyManagerPhone', position: 'daySafetyManager' },
-            { field: 'daySafetyOfficer', phoneField: 'daySafetyOfficerPhone', position: 'daySafetyOfficer' }
-        ];
-
-        positions.forEach(({ field, phoneField, position }) => {
-            if (values[field]) {
-                employees.push({
-                    employee_id: "",
-                    employee_name: values[field],
-                    phone: values[phoneField] || "",
-                    position: position
-                });
+    const handleSaveDayShift = useCallback(
+        (date, values) => {
+            // 从缓存中查找对应日期的白班值班表记录
+            const dutyRecord = getDutyDataByDateAndShift(date, "0");
+            if (!dutyRecord) {
+                console.error("未找到对应日期的白班值班表记录");
+                return;
             }
-        });
 
-        // 构建更新请求体
-        const updateData = {
-            duty_date: date,
-            employees: employees,
-            id: dutyRecord.id,
-            shift_type: "0", // 白班
-            week: dayjs(date).day()
-        };
+            // 构建employees数组
+            const employees = [];
 
-        // 调用更新API
-         updateDutyLogMutation.mutate(updateData, {
-             onSuccess: () => {
-                 message.success('白班信息保存成功！');
-             },
-             onError: (error) => {
-                 console.error('保存白班信息失败:', error);
-                 message.error('保存白班信息失败，请重试');
-             }
-         });
-    }, [updateDutyLogMutation, getDutyDataByDateAndShift, message]);
+            // 处理白班各个岗位的人员信息
+            const positions = [
+                {
+                    field: "dayDutyLeader",
+                    phoneField: "dayDutyLeaderPhone",
+                    position: "dayDutyLeader",
+                },
+                {
+                    field: "dayDutyManager",
+                    phoneField: "dayDutyManagerPhone",
+                    position: "dayDutyManager",
+                },
+                {
+                    field: "daySafetyManager",
+                    phoneField: "daySafetyManagerPhone",
+                    position: "daySafetyManager",
+                },
+                {
+                    field: "daySafetyOfficer",
+                    phoneField: "daySafetyOfficerPhone",
+                    position: "daySafetyOfficer",
+                },
+            ];
+
+            positions.forEach(({ field, phoneField, position }) => {
+                if (values[field]) {
+                    employees.push({
+                        employee_id: "",
+                        employee_name: values[field],
+                        phone: values[phoneField] || "",
+                        position: position,
+                    });
+                }
+            });
+
+            // 构建更新请求体
+            const updateData = {
+                duty_date: date,
+                employees: employees,
+                id: dutyRecord.id,
+                shift_type: "0", // 白班
+                week: dayjs(date).day(),
+            };
+
+            // 调用更新API
+            updateDutyLogMutation.mutate(updateData, {
+                onSuccess: () => {
+                    message.success("白班信息保存成功！");
+                },
+                onError: (error) => {
+                    console.error("保存白班信息失败:", error);
+                    message.error("保存白班信息失败，请重试");
+                },
+            });
+        },
+        [updateDutyLogMutation, getDutyDataByDateAndShift, message]
+    );
 
     /**
      * 处理夜班表单保存
      * @param {string} date - 日期字符串
      * @param {Object} values - 表单数据
      */
-    const handleSaveNightShift = useCallback((date, values) => {
-        // 从缓存中查找对应日期的夜班值班表记录
-        const dutyRecord = getDutyDataByDateAndShift(date, "1");
-        if (!dutyRecord) {
-            console.error('未找到对应日期的夜班值班表记录');
-            return;
-        }
-
-        // 构建employees数组
-        const employees = [];
-        
-        // 处理夜班各个岗位的人员信息
-        const positions = [
-            { field: 'nightDutyLeader', phoneField: 'nightDutyLeaderPhone', position: 'nightDutyLeader' },
-            { field: 'nightSafetyOfficer', phoneField: 'nightSafetyOfficerPhone', position: 'nightSafetyOfficer' }
-        ];
-
-        positions.forEach(({ field, phoneField, position }) => {
-            if (values[field]) {
-                employees.push({
-                    employee_id: "",
-                    employee_name: values[field],
-                    phone: values[phoneField] || "",
-                    position: position
-                });
+    const handleSaveNightShift = useCallback(
+        (date, values) => {
+            // 从缓存中查找对应日期的夜班值班表记录
+            const dutyRecord = getDutyDataByDateAndShift(date, "1");
+            if (!dutyRecord) {
+                console.error("未找到对应日期的夜班值班表记录");
+                return;
             }
-        });
 
-        // 构建更新请求体
-        const updateData = {
-            duty_date: date,
-            employees: employees,
-            id: dutyRecord.id,
-            shift_type: "1", // 夜班
-            week: dayjs(date).day()
-        };
+            // 构建employees数组
+            const employees = [];
 
-        // 调用更新API
-         updateDutyLogMutation.mutate(updateData, {
-             onSuccess: () => {
-                 message.success('夜班信息保存成功！');
-             },
-             onError: (error) => {
-                 console.error('保存夜班信息失败:', error);
-                 message.error('保存夜班信息失败，请重试');
-             }
-         });
-     }, [getDutyDataByDateAndShift, message, updateDutyLogMutation]);
+            // 处理夜班各个岗位的人员信息
+            const positions = [
+                {
+                    field: "nightDutyLeader",
+                    phoneField: "nightDutyLeaderPhone",
+                    position: "nightDutyLeader",
+                },
+                {
+                    field: "nightSafetyOfficer",
+                    phoneField: "nightSafetyOfficerPhone",
+                    position: "nightSafetyOfficer",
+                },
+            ];
+
+            positions.forEach(({ field, phoneField, position }) => {
+                if (values[field]) {
+                    employees.push({
+                        employee_id: "",
+                        employee_name: values[field],
+                        phone: values[phoneField] || "",
+                        position: position,
+                    });
+                }
+            });
+
+            // 构建更新请求体
+            const updateData = {
+                duty_date: date,
+                employees: employees,
+                id: dutyRecord.id,
+                shift_type: "1", // 夜班
+                week: dayjs(date).day(),
+            };
+
+            // 调用更新API
+            updateDutyLogMutation.mutate(updateData, {
+                onSuccess: () => {
+                    message.success("夜班信息保存成功！");
+                },
+                onError: (error) => {
+                    console.error("保存夜班信息失败:", error);
+                    message.error("保存夜班信息失败，请重试");
+                },
+            });
+        },
+        [getDutyDataByDateAndShift, message, updateDutyLogMutation]
+    );
 
     return {
         finalData,
