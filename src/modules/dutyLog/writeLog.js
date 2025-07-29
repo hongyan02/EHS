@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import LogForm from "../../components/calendar/LogForm.js";
 import { useDutyLog } from "../../hooks/use-duty-log";
+import { useCreateDutyLog, useUpdateDutyLog } from "../../queries/dutyLog/log/index";
 
 dayjs.locale("zh-cn");
 
@@ -25,6 +26,11 @@ export default function WriteLog() {
         handleAddDayShiftSchedule,
         handleAddNightShiftSchedule,
     } = useDutyLog(selectedMonth);
+
+    // 创建日志的mutation
+    const createDutyLogMutation = useCreateDutyLog();
+    // 更新日志的mutation
+    const updateDutyLogMutation = useUpdateDutyLog();
 
     /**
      * 根据选择的月份生成当月天数的items
@@ -56,33 +62,80 @@ export default function WriteLog() {
 
             // 处理创建白班日志
             const handleCreateDayShiftLog = () => {
-                setShowLogForm((prev) => ({
-                    ...prev,
-                    [`${dateStr}-day`]: true,
-                }));
+                const requestData = {
+                    duty_date: dateStr,
+                    duty_log: "",
+                    employee_id: "",
+                    employee_name: "",
+                    shift_type: "0",
+                    todo_log: ""
+                };
+
+                createDutyLogMutation.mutate(requestData, {
+                    onSuccess: () => {
+                        console.log("白班日志创建成功");
+                        // 创建成功后显示表单
+                        setShowLogForm((prev) => ({
+                            ...prev,
+                            [`${dateStr}-day`]: true,
+                        }));
+                    },
+                    onError: (error) => {
+                        console.error("白班日志创建失败:", error);
+                    }
+                });
             };
 
             // 处理创建夜班日志
             const handleCreateNightShiftLog = () => {
-                setShowLogForm((prev) => ({
-                    ...prev,
-                    [`${dateStr}-night`]: true,
-                }));
+                const requestData = {
+                    duty_date: dateStr,
+                    duty_log: "",
+                    employee_id: "",
+                    employee_name: "",
+                    shift_type: "1",
+                    todo_log: ""
+                };
+
+                createDutyLogMutation.mutate(requestData, {
+                    onSuccess: () => {
+                        console.log("夜班日志创建成功");
+                        // 创建成功后显示表单
+                        setShowLogForm((prev) => ({
+                            ...prev,
+                            [`${dateStr}-night`]: true,
+                        }));
+                    },
+                    onError: (error) => {
+                        console.error("夜班日志创建失败:", error);
+                    }
+                });
             };
 
             // 处理日志保存
             const handleSaveLog = (formData, shiftType) => {
-                console.log(
-                    `保存${dateStr}的${shiftType === "day" ? "白班" : "夜班"}日志:`,
-                    formData
-                );
-                // 这里可以调用API保存日志数据
+                const requestData = {
+                    duty_date: dateStr,
+                    duty_log: formData.content || "",
+                    employee_id: "",
+                    employee_name: "",
+                    shift_type: shiftType === "day" ? "0" : "1",
+                    todo_log: formData.todoItems ? JSON.stringify(formData.todoItems) : ""
+                };
 
-                // 保存成功后隐藏表单
-                setShowLogForm((prev) => ({
-                    ...prev,
-                    [`${dateStr}-${shiftType}`]: false,
-                }));
+                updateDutyLogMutation.mutate(requestData, {
+                    onSuccess: () => {
+                        console.log(`${shiftType === "day" ? "白班" : "夜班"}日志更新成功`);
+                        // 保存成功后隐藏表单
+                        setShowLogForm((prev) => ({
+                            ...prev,
+                            [`${dateStr}-${shiftType}`]: false,
+                        }));
+                    },
+                    onError: (error) => {
+                        console.error(`${shiftType === "day" ? "白班" : "夜班"}日志更新失败:`, error);
+                    }
+                });
             };
 
             // 处理取消创建日志
@@ -221,6 +274,8 @@ export default function WriteLog() {
         getDutyDataByDateAndShift,
         handleAddDayShiftSchedule,
         handleAddNightShiftSchedule,
+        createDutyLogMutation,
+        updateDutyLogMutation,
     ]);
 
     /**

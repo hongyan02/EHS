@@ -4,13 +4,13 @@ import Chart from "@/modules/eLearn/chart";
 import { Button, Dropdown, App } from "antd";
 import { DownOutlined, FileExcelOutlined, BarChartOutlined } from "@ant-design/icons";
 import UnfinishTable from "@/components/eLearn/unfinishTable";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, use, useCallback } from "react";
 import { exportUncompletedUsers, exportDepartmentStats } from "@/util/export";
 
 /**
  * 安全教育培训项目详情页面
- * @param {Object} params - 路由参数Promise
- * @param {string} params.projectName - 项目名称
+ * @param {Object} props - 页面组件props
+ * @param {Promise<{projectName: string}>} props.params - 路由参数Promise
  * @returns {JSX.Element} 项目详情页面组件
  */
 export default function ELearnMore({ params }) {
@@ -29,7 +29,7 @@ export default function ELearnMore({ params }) {
     /**
      * 从localStorage获取项目数据
      */
-    const _getProjectData = () => {
+    const _getProjectData = useCallback(() => {
         try {
             const storedData = localStorage.getItem(`eLearn_${decodedProjectName}`);
             if (storedData) {
@@ -41,11 +41,11 @@ export default function ELearnMore({ params }) {
         } finally {
             setLoading(false);
         }
-    };
+    }, [decodedProjectName]);
 
     useEffect(() => {
         _getProjectData();
-    }, [decodedProjectName, _getProjectData]);
+    }, [_getProjectData]);
 
     // 提取数据
     const departmentStats = projectData?.data?.department_stats || [];

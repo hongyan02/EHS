@@ -1,5 +1,5 @@
-import { createDutyLog, updateDutyLog, submitDutyLog, deleteDutyLog } from "./api";
-import { useQuery, useMutation, useQueryClient } from "react-query";
+import { createDutyLog, updateDutyLog, submitDutyLog, deleteDutyLog, getDutyLogs } from "./api";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 //创建日志
 export const useCreateDutyLog = () => {
@@ -54,6 +54,24 @@ export const useDeleteDutyLog = () => {
         onSuccess: (data) => {
             console.log(data);
             queryClient.invalidateQueries("dutyLogs");
+        },
+        onError: (error) => {
+            console.error(error);
+        },
+    });
+};
+
+//查询日志
+export const useGetDutyLogs = (params) => {
+    return useQuery({
+        queryFn: () => getDutyLogs(params),
+        queryKey: ["dutyLogs", params],
+        select: (data) => {
+            return data.data || [];
+        },
+        enabled: !!params, // 只有当参数存在时才执行查询
+        onSuccess: (data) => {
+            console.log(data);
         },
         onError: (error) => {
             console.error(error);
