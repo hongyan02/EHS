@@ -15,7 +15,6 @@ import {
  */
 export const useDutyLog = (selectedMonth) => {
     const { message } = App.useApp();
-    const [showDutyForm, setShowDutyForm] = useState({});
     const createDutyLogMutation = useCreateDutyLogCalendar();
     const updateDutyLogMutation = useUpdateDutyLogCalendar();
 
@@ -171,14 +170,12 @@ export const useDutyLog = (selectedMonth) => {
             // 调用创建API
             createDutyLogMutation.mutate(dutyData, {
                 onSuccess: () => {
-                    // 创建成功后显示表单
-                    setShowDutyForm((prev) => ({
-                        ...prev,
-                        [date]: true,
-                    }));
+                    // 创建成功
+                    message.success('白班值班表创建成功');
                 },
                 onError: (error) => {
                     console.error("创建白班值班表失败:", error);
+                    message.error('创建白班值班表失败，请重试');
                 },
             });
         },
@@ -207,18 +204,16 @@ export const useDutyLog = (selectedMonth) => {
             // 调用创建API
             createDutyLogMutation.mutate(dutyData, {
                 onSuccess: () => {
-                    // 创建成功后显示表单
-                    setShowDutyForm((prev) => ({
-                        ...prev,
-                        [date]: true,
-                    }));
+                    // 创建成功
+                    message.success('夜班值班表创建成功');
                 },
                 onError: (error) => {
                     console.error("创建夜班值班表失败:", error);
+                    message.error('创建夜班值班表失败，请重试');
                 },
             });
         },
-        [createDutyLogMutation]
+        [createDutyLogMutation,message]
     );
 
     /**
@@ -286,7 +281,7 @@ export const useDutyLog = (selectedMonth) => {
                  message.error('保存白班信息失败，请重试');
              }
          });
-    }, [finalData, updateDutyLogMutation]);
+    }, [updateDutyLogMutation, getDutyDataByDateAndShift, message]);
 
     /**
      * 处理夜班表单保存
@@ -340,11 +335,9 @@ export const useDutyLog = (selectedMonth) => {
                  message.error('保存夜班信息失败，请重试');
              }
          });
-     }, [finalData, updateDutyLogMutation]);
+     }, [getDutyDataByDateAndShift, message, updateDutyLogMutation]);
 
     return {
-        showDutyForm,
-        setShowDutyForm,
         finalData,
         getDayShiftInitialValues,
         getNightShiftInitialValues,

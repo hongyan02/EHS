@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Calendar, Badge, Button,Empty } from "antd";
+import { Calendar, Badge, Button, Empty } from "antd";
 import { useRouter } from "next/navigation";
 import zhCN from "antd/locale/zh_CN";
 import "dayjs/locale/zh-cn";
@@ -18,16 +18,20 @@ export default function DutyLogCalendar() {
 
     // 根据当前月份生成查询参数
     const getQueryParams = (month) => {
-        const startDate = month.startOf('month').format('YYYY-MM-DD');
-        const endDate = month.endOf('month').format('YYYY-MM-DD');
+        const startDate = month.startOf("month").format("YYYY-MM-DD");
+        const endDate = month.endOf("month").format("YYYY-MM-DD");
         return {
             start_duty_date: startDate,
-            end_duty_date: endDate
+            end_duty_date: endDate,
         };
     };
 
     // 使用API获取值班数据
-    const { data: dutyData = [], isLoading, error } = useDutyLogCalendarList(getQueryParams(currentMonth));
+    const {
+        data: dutyData = [],
+        isLoading,
+        error,
+    } = useDutyLogCalendarList(getQueryParams(currentMonth));
 
     /**
      * 获取指定日期的值班数据
@@ -51,8 +55,10 @@ export default function DutyLogCalendar() {
 
         monthData.forEach((item) => {
             // 根据shift_type筛选班次："0"为白班，"1"为夜班
-            if ((currentShift === "day" && item.shift_type === "0") || 
-                (currentShift === "night" && item.shift_type === "1")) {
+            if (
+                (currentShift === "day" && item.shift_type === "0") ||
+                (currentShift === "night" && item.shift_type === "1")
+            ) {
                 totalCount += (item.employees || []).length;
             }
         });
@@ -99,9 +105,11 @@ export default function DutyLogCalendar() {
         const badgeItems = [];
 
         // 根据当前班次筛选数据
-        const filteredData = dateData.filter(item => {
-            return (currentShift === "day" && item.shift_type === "0") || 
-                   (currentShift === "night" && item.shift_type === "1");
+        const filteredData = dateData.filter((item) => {
+            return (
+                (currentShift === "day" && item.shift_type === "0") ||
+                (currentShift === "night" && item.shift_type === "1")
+            );
         });
 
         if (!filteredData.length) return null;
@@ -109,13 +117,13 @@ export default function DutyLogCalendar() {
         // 职位映射表
         const positionLabels = {
             // 白班职位
-            'dayDutyLeader': '值班领导',
-            'dayDutyManager': '带班干部',
-            'daySafetyManager': '安全管理人员',
-            'daySafetyOfficer': '安全员',
+            dayDutyLeader: "值班领导",
+            dayDutyManager: "带班干部",
+            daySafetyManager: "安全管理人员",
+            daySafetyOfficer: "安全员",
             // 夜班职位
-            'nightDutyLeader': '值班领导',
-            'nightSafetyOfficer': '安全员'
+            nightDutyLeader: "值班领导",
+            nightSafetyOfficer: "安全员",
         };
 
         // 渲染每个值班记录
@@ -123,9 +131,9 @@ export default function DutyLogCalendar() {
             const employees = dutyItem.employees || [];
             employees.forEach((employee, empIndex) => {
                 const badgeStatus = currentShift === "day" ? "processing" : "error";
-                const positionLabel = positionLabels[employee.position] || '职员';
+                const positionLabel = positionLabels[employee.position] || "职员";
                 const displayText = `${positionLabel}：${employee.employee_name}`;
-                
+
                 badgeItems.push(
                     <li key={`${dutyIndex}-${empIndex}`} className="text-xs leading-tight">
                         <Badge status={badgeStatus} text={displayText} />
@@ -176,7 +184,11 @@ export default function DutyLogCalendar() {
     }
 
     if (error) {
-        return <div className="text-center p-4 text-red-500"><Empty description="获取失败，请检查网络" /></div>;
+        return (
+            <div className="text-center p-4 text-red-500">
+                <Empty description="获取失败，请检查网络" />
+            </div>
+        );
     }
 
     return (
@@ -197,11 +209,7 @@ export default function DutyLogCalendar() {
                     </span>
                 </Button>
             </div>
-            <Calendar 
-                locale={zhCN} 
-                cellRender={_cellRender} 
-                onPanelChange={_handlePanelChange}
-            />
+            <Calendar locale={zhCN} cellRender={_cellRender} onPanelChange={_handlePanelChange} />
         </div>
     );
 }
