@@ -45,7 +45,7 @@ export default function ELearnMore({ params }) {
 
     useEffect(() => {
         _getProjectData();
-    }, [decodedProjectName]);
+    }, [decodedProjectName, _getProjectData]);
 
     // 提取数据
     const departmentStats = projectData?.data?.department_stats || [];
