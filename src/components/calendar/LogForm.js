@@ -9,9 +9,11 @@ import TipTapEditor from "./TipTapEditor";
  * @param {Object} props - 组件属性
  * @param {Object} props.initialValues - 初始值
  * @param {Function} props.onSave - 保存回调函数
+ * @param {Function} props.onSubmit - 提交回调函数
+ * @param {boolean} props.showSubmitButton - 是否显示提交按钮
  * @returns {JSX.Element} 日志表单组件
  */
-export default function LogForm({ initialValues, onSave }) {
+export default function LogForm({ initialValues, onSave, onSubmit, showSubmitButton = false }) {
     const [form] = Form.useForm();
     const [todoItems, setTodoItems] = useState([{ id: 1, text: "", completed: false }]);
     const [editorContent, setEditorContent] = useState(initialValues?.content || "");
@@ -113,7 +115,10 @@ export default function LogForm({ initialValues, onSave }) {
                                 </Form.Item>
 
                                 {/* 富文本编辑器 */}
-                                <Form.Item label="日志内容" className="flex flex-col">
+                                <Form.Item
+                                    label="日志内容"
+                                    className="flex flex-col"
+                                >
                                     <TipTapEditor
                                         content={editorContent}
                                         onChange={handleEditorChange}
@@ -122,7 +127,10 @@ export default function LogForm({ initialValues, onSave }) {
                                 </Form.Item>
 
                                 {/* 待办事项 */}
-                                <Form.Item label="待办事项" className="flex-shrink-0">
+                                <Form.Item
+                                    label="待办事项"
+                                    className="flex-shrink-0"
+                                >
                                     <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
                                         <div className="space-y-3 max-h-60 overflow-y-auto">
                                             {todoItems.map((item, index) => (
@@ -192,9 +200,23 @@ export default function LogForm({ initialValues, onSave }) {
                                 {/* 提交按钮 */}
                                 <Form.Item className="flex-shrink-0">
                                     <div className="flex justify-end space-x-2">
-                                        <Button type="primary" htmlType="submit" size="large">
+                                        <Button
+                                            type="primary"
+                                            htmlType="submit"
+                                            size="large"
+                                        >
                                             保存日志
                                         </Button>
+                                        {showSubmitButton && (
+                                            <Button
+                                                type="primary"
+                                                danger
+                                                size="large"
+                                                onClick={() => onSubmit && onSubmit()}
+                                            >
+                                                提交日志
+                                            </Button>
+                                        )}
                                     </div>
                                 </Form.Item>
                             </Form>

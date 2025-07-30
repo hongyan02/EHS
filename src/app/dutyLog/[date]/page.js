@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useDutyLog } from "../../../hooks/use-duty-log";
 import { useGetDutyLogs } from "../../../queries/dutyLog/log/index";
 import dayjs from "dayjs";
-import { Card, Descriptions, Typography, Divider, Empty, Tag } from "antd";
+import { Card, Descriptions, Typography, Empty, Tag } from "antd";
 import {
     UserOutlined,
     PhoneOutlined,
@@ -73,8 +73,8 @@ export default function DutyLogDetailPage() {
 
         const positionMap = {
             dayDutyLeader: "白班值班领导",
-            dayDutyManager: "白班值班经理",
-            daySafetyManager: "白班安全经理",
+            dayDutyManager: "白班带班干部",
+            daySafetyManager: "白班安全管理人员",
             daySafetyOfficer: "白班安全员",
             nightDutyLeader: "夜班值班领导",
             nightSafetyOfficer: "夜班安全员",
@@ -129,7 +129,7 @@ export default function DutyLogDetailPage() {
                         className="flex items-center space-x-2"
                     >
                         <CheckCircleOutlined className="text-green-500 text-xs" />
-                        <Text>{todo}</Text>
+                        <Text>{typeof todo === "string" ? todo : todo.text || todo}</Text>
                     </li>
                 ))}
             </ul>
@@ -166,16 +166,18 @@ export default function DutyLogDetailPage() {
                         </div>
                     }
                     className="mb-6"
-                    headStyle={{
-                        backgroundColor: "#e6f7ff",
-                        borderBottom: "1px solid #91d5ff",
+                    styles={{
+                        header: {
+                            backgroundColor: "#e6f7ff",
+                            borderBottom: "1px solid #91d5ff",
+                        },
                     }}
                 >
                     <Descriptions
                         bordered
                         column={1}
                         size="middle"
-                        labelStyle={{ width: "120px", backgroundColor: "#f0f9ff" }}
+                        styles={{ label: { width: "130px", backgroundColor: "#f0f9ff" } }}
                     >
                         <Descriptions.Item
                             label={
@@ -230,16 +232,18 @@ export default function DutyLogDetailPage() {
                             </span>
                         </div>
                     }
-                    headStyle={{
-                        backgroundColor: "#fef2f2",
-                        borderBottom: "1px solid #fecaca",
+                    styles={{
+                        header: {
+                            backgroundColor: "#fef2f2",
+                            borderBottom: "1px solid #fecaca",
+                        },
                     }}
                 >
                     <Descriptions
                         bordered
                         column={1}
                         size="middle"
-                        labelStyle={{ width: "120px", backgroundColor: "#fef7f7" }}
+                        styles={{ label: { width: "130px", backgroundColor: "#fef7f7" } }}
                     >
                         <Descriptions.Item
                             label={

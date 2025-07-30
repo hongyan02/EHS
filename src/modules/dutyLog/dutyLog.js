@@ -25,16 +25,22 @@ export default function DutyLog() {
             employee_name: "",
             start_date: startDate,
             end_date: endDate,
-            shift_type: shiftType
+            shift_type: shiftType,
         };
     }, []);
 
     // 查询白班日志
-    const dayShiftParams = useMemo(() => getQueryParams(selectedMonth, "0"), [selectedMonth, getQueryParams]);
+    const dayShiftParams = useMemo(
+        () => getQueryParams(selectedMonth, "0"),
+        [selectedMonth, getQueryParams]
+    );
     const { data: dayShiftLogs = [] } = useGetDutyLogs(dayShiftParams);
 
     // 查询夜班日志
-    const nightShiftParams = useMemo(() => getQueryParams(selectedMonth, "1"), [selectedMonth, getQueryParams]);
+    const nightShiftParams = useMemo(
+        () => getQueryParams(selectedMonth, "1"),
+        [selectedMonth, getQueryParams]
+    );
     const { data: nightShiftLogs = [] } = useGetDutyLogs(nightShiftParams);
 
     /**
@@ -56,8 +62,8 @@ export default function DutyLog() {
                 .padStart(2, "0")}`;
 
             // 查找当天的白班和夜班日志
-            const dayShiftLog = dayShiftLogs.find(log => log.duty_date === dateStr);
-            const nightShiftLog = nightShiftLogs.find(log => log.duty_date === dateStr);
+            const dayShiftLog = dayShiftLogs.find((log) => log.duty_date === dateStr);
+            const nightShiftLog = nightShiftLogs.find((log) => log.duty_date === dateStr);
 
             // 解析待办事项
             const parseTodos = (todoLog) => {
@@ -70,6 +76,24 @@ export default function DutyLog() {
                 }
             };
 
+            // 检查白班日志数据是否存在且有内容
+            const isDayShiftDataEmpty =
+                !dayShiftLog ||
+                ((!dayShiftLog.employee_name || dayShiftLog.employee_name.trim() === "") &&
+                    (!dayShiftLog.duty_log || dayShiftLog.duty_log.trim() === "") &&
+                    (!dayShiftLog.todo_log || parseTodos(dayShiftLog.todo_log).length === 0));
+
+            // 检查夜班日志数据是否存在且有内容
+            const isNightShiftDataEmpty =
+                !nightShiftLog ||
+                ((!nightShiftLog.employee_name || nightShiftLog.employee_name.trim() === "") &&
+                    (!nightShiftLog.duty_log || nightShiftLog.duty_log.trim() === "") &&
+                    (!nightShiftLog.todo_log || parseTodos(nightShiftLog.todo_log).length === 0));
+
+            // 判断是否有API返回的日期记录（即使数据为空）
+            const hasDayShiftRecord = !!dayShiftLog;
+            const hasNightShiftRecord = !!nightShiftLog;
+
             return {
                 key: day.toString(),
                 date: dateStr,
@@ -77,25 +101,28 @@ export default function DutyLog() {
                 weekday: weekday,
                 isToday: date.isSame(dayjs(), "day"),
                 logs: {
-                    dayShift: dayShiftLog ? {
-                        recorder: dayShiftLog.employee_name || "未知",
-                        details: dayShiftLog.duty_log || "暂无日志内容",
-                        todos: parseTodos(dayShiftLog.todo_log),
-                    } : (day <= 3 ? {
-                        recorder: "张三",
-                        details: `<h3>白班工作总结</h3><p>今日完成了以下工作：</p><ul><li><strong>设备巡检</strong>：完成了所有生产设备的例行巡检</li><li><em>安全检查</em>：发现并处理了2处安全隐患</li><li><u>数据记录</u>：更新了设备运行参数</li></ul><blockquote><p>特别注意：3号设备需要在下周进行维护保养</p></blockquote><p>明日计划：</p><ol><li>继续设备巡检工作</li><li>配合维修人员进行设备检修</li><li>完成月度安全报告</li></ol><p>备注：<code>设备编号A001</code>运行正常，<mark>温度控制在正常范围内</mark>。</p>`,
-                        todos: ["完成设备维护记录", "提交安全检查报告", "准备下周培训材料"],
-                    } : null),
-                    nightShift: nightShiftLog ? {
-                        recorder: nightShiftLog.employee_name || "未知",
-                        details: nightShiftLog.duty_log || "暂无日志内容",
-                        todos: parseTodos(nightShiftLog.todo_log),
-                    } : (day <= 2 ? {
-                        recorder: "李四",
-                        details: `<h3>夜班值守记录</h3><p>夜班期间主要工作内容：</p><ul><li><strong>监控系统</strong>：全程监控生产线运行状态</li><li><strong>应急处理</strong>：处理了一起设备报警事件</li><li><strong>交接准备</strong>：整理了交接班记录</li></ul><p>异常情况处理：</p><blockquote><p><strong>时间</strong>：23:30<br><strong>事件</strong>：2号生产线温度异常<br><strong>处理</strong>：及时调整参数，恢复正常运行</p></blockquote><p>需要关注的事项：</p><ol><li>设备运行参数需要持续监控</li><li>原料库存即将不足，需要及时补充</li><li>下班前完成设备清洁工作</li></ol><p><mark>重要提醒</mark>：明日白班需要重点关注<code>设备B002</code>的运行状态。</p>`,
-                        todos: ["监控设备运行状态", "处理异常报警", "准备交接班记录"],
-                    } : null),
+                    dayShift:
+                        hasDayShiftRecord && !isDayShiftDataEmpty
+                            ? {
+                                  recorder: dayShiftLog.employee_name || "未知",
+                                  details: dayShiftLog.duty_log || "暂无日志内容",
+                                  todos: parseTodos(dayShiftLog.todo_log),
+                              }
+                            : null,
+                    nightShift:
+                        hasNightShiftRecord && !isNightShiftDataEmpty
+                            ? {
+                                  recorder: nightShiftLog.employee_name || "未知",
+                                  details: nightShiftLog.duty_log || "暂无日志内容",
+                                  todos: parseTodos(nightShiftLog.todo_log),
+                              }
+                            : null,
                 },
+                // 新增字段用于区分两种空状态
+                hasAnyRecord: hasDayShiftRecord || hasNightShiftRecord,
+                hasEmptyData:
+                    (hasDayShiftRecord && isDayShiftDataEmpty) ||
+                    (hasNightShiftRecord && isNightShiftDataEmpty),
             };
         });
     }, [selectedMonth, dayShiftLogs, nightShiftLogs]);
@@ -110,7 +137,11 @@ export default function DutyLog() {
 
     return (
         <div className="h-full w-full bg-white p-6">
-            <Space direction="vertical" size="large" style={{ width: "100%" }}>
+            <Space
+                direction="vertical"
+                size="large"
+                style={{ width: "100%" }}
+            >
                 {/* 月份选择器 */}
                 <div className="flex items-center gap-4">
                     <h2 className="text-xl font-semibold text-gray-800">值班日志</h2>
@@ -126,7 +157,10 @@ export default function DutyLog() {
                 {/* 时间线样式的日志展示 */}
                 <div className="relative">
                     {timelineItems.map((item, index) => (
-                        <div key={item.key} className="relative flex items-start">
+                        <div
+                            key={item.key}
+                            className="relative flex items-start"
+                        >
                             {/* 时间线左侧 - 日期信息 */}
                             <div className="flex-shrink-0 w-32 text-right pr-6">
                                 <div
@@ -187,8 +221,10 @@ export default function DutyLog() {
                                                                 详细日志：
                                                             </span>
                                                             <div className="mt-1">
-                                                                <ReadOnlyTiptapEditor 
-                                                                    content={item.logs.dayShift.details}
+                                                                <ReadOnlyTiptapEditor
+                                                                    content={
+                                                                        item.logs.dayShift.details
+                                                                    }
                                                                     className="text-sm border border-gray-200 rounded-md p-3 bg-white"
                                                                 />
                                                             </div>
@@ -205,7 +241,11 @@ export default function DutyLog() {
                                                                                 key={todoIndex}
                                                                                 className="text-gray-700"
                                                                             >
-                                                                                {todo}
+                                                                                {typeof todo ===
+                                                                                "string"
+                                                                                    ? todo
+                                                                                    : todo.text ||
+                                                                                      todo}
                                                                             </li>
                                                                         )
                                                                     )}
@@ -236,8 +276,10 @@ export default function DutyLog() {
                                                                 详细日志：
                                                             </span>
                                                             <div className="mt-1">
-                                                                <ReadOnlyTiptapEditor 
-                                                                    content={item.logs.nightShift.details}
+                                                                <ReadOnlyTiptapEditor
+                                                                    content={
+                                                                        item.logs.nightShift.details
+                                                                    }
                                                                     className="text-sm border border-gray-200 rounded-md p-3 bg-white"
                                                                 />
                                                             </div>
@@ -254,7 +296,11 @@ export default function DutyLog() {
                                                                                 key={todoIndex}
                                                                                 className="text-gray-700"
                                                                             >
-                                                                                {todo}
+                                                                                {typeof todo ===
+                                                                                "string"
+                                                                                    ? todo
+                                                                                    : todo.text ||
+                                                                                      todo}
                                                                             </li>
                                                                         )
                                                                     )}
@@ -266,8 +312,17 @@ export default function DutyLog() {
                                             )}
                                         </div>
                                     ) : (
-                                        <div className="text-sm text-gray-400 italic">
-                                            暂无日志记录
+                                        <div className="text-sm text-gray-400 italic flex items-center justify-center py-8">
+                                            <div className="text-center">
+                                                <div className="text-gray-300 text-2xl mb-2">
+                                                    {item.hasAnyRecord ? "📝" : "📋"}
+                                                </div>
+                                                <div>
+                                                    {item.hasAnyRecord
+                                                        ? "暂未上传日志"
+                                                        : "未创建日志"}
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
