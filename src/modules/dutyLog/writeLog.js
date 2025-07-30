@@ -296,13 +296,16 @@ export default function WriteLog() {
                                         ) : (
                                             // 未提交的日志，显示编辑表单
                                             <LogForm
-                                                 initialValues={{
-                                                     author: dayShiftLog?.employee_name || "",
-                                                     content: dayShiftLog?.duty_log || "",
-                                                     todoItems: parseTodos(dayShiftLog?.todo_log) || [],
-                                                 }}
-                                                 onSave={(formData) => handleSaveLog(formData, "day")}
-                                             />
+                                                initialValues={{
+                                                    author: dayShiftLog?.employee_name || "",
+                                                    content: dayShiftLog?.duty_log || "",
+                                                    todoItems:
+                                                        parseTodos(dayShiftLog?.todo_log) || [],
+                                                }}
+                                                onSave={(formData) =>
+                                                    handleSaveLog(formData, "day")
+                                                }
+                                            />
                                         )}
                                         {showLogForm[`${dateStr}-day`] && (
                                             <div className="flex justify-end mt-4">
@@ -404,14 +407,16 @@ export default function WriteLog() {
                                         ) : (
                                             // 未提交的日志，显示编辑表单
                                             <LogForm
-                                                 initialValues={{
-                                                     author: nightShiftLog?.employee_name || "",
-                                                     content: nightShiftLog?.duty_log || "",
-                                                     todoItems:
-                                                         parseTodos(nightShiftLog?.todo_log) || [],
-                                                 }}
-                                                 onSave={(formData) => handleSaveLog(formData, "night")}
-                                             />
+                                                initialValues={{
+                                                    author: nightShiftLog?.employee_name || "",
+                                                    content: nightShiftLog?.duty_log || "",
+                                                    todoItems:
+                                                        parseTodos(nightShiftLog?.todo_log) || [],
+                                                }}
+                                                onSave={(formData) =>
+                                                    handleSaveLog(formData, "night")
+                                                }
+                                            />
                                         )}
                                         {showLogForm[`${dateStr}-night`] && (
                                             <div className="flex justify-end mt-4">
