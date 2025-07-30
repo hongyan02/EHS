@@ -73,7 +73,7 @@ export default function AreaDetailDrawer() {
         } else {
             setTargetKeys([]);
         }
-    }, [selectedArea?.area_id, isLoadingAreaRiskData, areaToRiskData?.data?.length, areaToRiskData.data]);
+    }, [selectedArea?.area_id, isLoadingAreaRiskData, areaToRiskData?.data?.length, areaToRiskData?.data]);
 
     // 当抽屉关闭时，重置穿梭框状态
     React.useEffect(() => {
