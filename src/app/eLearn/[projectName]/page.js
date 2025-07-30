@@ -102,13 +102,20 @@ export default function ELearnMore({ params }) {
             </div>
             <div className="h-full w-full flex flex-col p-4">
                 <div className="">
-                    <Chart projectName={decodedProjectName} dataSource={departmentStats} />
+                    <Chart
+                        projectName={decodedProjectName}
+                        dataSource={departmentStats}
+                    />
                 </div>
             </div>
             <div className="h-full w-full">
                 <div className="flex gap-4 justify-between items-center p-4">
                     <h1 className="text-xl font-bold">未完成人员名单</h1>
-                    <Dropdown menu={{ items: exportMenuItems }} placement="bottomRight" arrow>
+                    <Dropdown
+                        menu={{ items: exportMenuItems }}
+                        placement="bottomRight"
+                        arrow
+                    >
                         <Button type="primary">
                             导出 <DownOutlined />
                         </Button>

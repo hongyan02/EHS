@@ -2,19 +2,19 @@ const base_url = "http://10.22.161.62:3260";
 
 //创建日志
 export const createDutyLog = async (data) => {
-        const response = await fetch(`${base_url}/v1/duty-logs`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        });
+    const response = await fetch(`${base_url}/v1/duty-logs`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    });
 
-        if (!response.ok) {
-            throw new Error(`创建日志失败: ${response.statusText}`);
-        }
+    if (!response.ok) {
+        throw new Error(`创建日志失败: ${response.statusText}`);
+    }
 
-        const result = await response.json();
+    const result = await response.json();
     return result;
 };
 
@@ -33,7 +33,6 @@ export const updateDutyLog = async (data) => {
     const result = await response.json();
     return result;
 };
-
 
 //提交日志
 export const submitDutyLog = async (data) => {

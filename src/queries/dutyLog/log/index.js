@@ -19,7 +19,7 @@ export const useCreateDutyLog = () => {
 //更新日志
 export const useUpdateDutyLog = () => {
     const queryClient = useQueryClient();
-    return useMutation({    
+    return useMutation({
         mutationFn: updateDutyLog,
         onSuccess: (data) => {
             console.log(data);
