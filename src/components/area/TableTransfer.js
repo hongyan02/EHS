@@ -166,8 +166,7 @@ export default function TableTransfer({
                 titles={["全部危险源", "当前区域危险源"]}
                 filterOption={_filterOption}
                 loading={loading}
-                oneWay={true} // 只允许单向转移（左到右）
-                operations={["", ""]} // 自定义按钮文字，只显示右向箭头
+                operations={[">", "<"]} // 自定义按钮文字，显示双向箭头
                 style={{
                     width: "100%",
                     height: "100%",

@@ -42,3 +42,24 @@ export const batchAreaToRisk = async (areaId, riskSourceIds) => {
     const result = await response.json();
     return result;
 };
+
+//批量删除危险源ID
+export const deleteAreaToRisk = async (areaId, riskSourceIds) => {
+    const response = await fetch(
+        `${base_url}/v1/risk-mappings/remove/area/${areaId}/risk-sources`,
+        {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(riskSourceIds),
+        }
+    );
+
+    if (!response.ok) {
+        throw new Error(`HTTP 错误: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+};
