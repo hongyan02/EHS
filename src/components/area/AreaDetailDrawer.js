@@ -3,7 +3,7 @@ import { CloseOutlined, SettingOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import useAreaStore from "../../store/useAreaStore";
 import TableTransfer from "./TableTransfer";
-import { useGetAreaToRisk, useBatchAreaToRisk } from "../../queries/dangerSource/areaToRisk";
+import { useGetAreaToRisk, useBatchAreaToRisk, useDeleteAreaToRisk } from "../../queries/dangerSource/areaToRisk";
 import { useGetRiskSourceList } from "../../queries/dangerSource/risk";
 
 /**
@@ -37,12 +37,15 @@ export default function AreaDetailDrawer() {
 
     // 批量关联区域和风险源的 mutation
     const batchAreaToRiskMutation = useBatchAreaToRisk();
+    
+    // 批量删除区域和风险源关联的 mutation
+    const deleteAreaToRiskMutation = useDeleteAreaToRisk();
 
     // 处理全部危险源数据（穿梭框的 dataSource）
     const allRiskSourceList = allRiskSourceData || [];
     const allDataSource = allRiskSourceList.map((item, index) => ({
         ...item,
-        key: item.risk_source_id || item.id || `fallback-all-${index}`,
+        key: `${item.risk_source_id || item.id || 'fallback'}-all-${index}`,
     }));
 
     // 处理区域关联的危险源数据（主表格显示）
@@ -73,7 +76,12 @@ export default function AreaDetailDrawer() {
         } else {
             setTargetKeys([]);
         }
-    }, [selectedArea?.area_id, isLoadingAreaRiskData, areaToRiskData?.data?.length, areaToRiskData?.data]);
+    }, [
+        selectedArea?.area_id,
+        isLoadingAreaRiskData,
+        areaToRiskData?.data?.length,
+        areaToRiskData?.data,
+    ]);
 
     // 当抽屉关闭时，重置穿梭框状态
     React.useEffect(() => {
@@ -160,7 +168,7 @@ export default function AreaDetailDrawer() {
     );
 
     /**
-     * 处理穿梭框变化（只允许添加，不允许移除）
+     * 处理穿梭框变化（支持添加和移除）
      * @param {Array} nextTargetKeys - 新的目标键数组
      */
     const _handleTransferChange = async (nextTargetKeys) => {
@@ -173,41 +181,72 @@ export default function AreaDetailDrawer() {
         const addedKeys = nextTargetKeys.filter((key) => !currentKeys.includes(key));
         const removedKeys = currentKeys.filter((key) => !nextTargetKeys.includes(key));
 
-        // 只允许新增，不允许移除
+        // 提取实际的risk_source_id（去掉key中的后缀）
+        const extractRiskSourceId = (key) => {
+            return key.replace(/-all-\d+$/, '');
+        };
+
+        // 处理添加操作
+        if (addedKeys.length > 0) {
+            modal.confirm({
+                title: "确认添加",
+                content: `将新增 ${addedKeys.length} 个风险源关联到区域"${selectedArea.area_name}"，确定要继续吗？`,
+                onOk: async () => {
+                    try {
+                        // 立即更新 UI 状态
+                        setTargetKeys(nextTargetKeys);
+
+                        // 提取实际的risk_source_id
+                        const riskSourceIds = nextTargetKeys.map(extractRiskSourceId);
+
+                        // 调用 API 保存更改
+                        await batchAreaToRiskMutation.mutateAsync({
+                            areaId: selectedArea.area_id,
+                            riskSourceIds: riskSourceIds,
+                        });
+
+                        message.success("危险源关联添加成功");
+                    } catch (error) {
+                        console.error("添加危险源关联失败:", error);
+                        message.error("添加失败，请重试");
+
+                        // 失败时恢复到原来的状态
+                        setTargetKeys(currentKeys);
+                    }
+                },
+            });
+        }
+
+        // 处理删除操作
         if (removedKeys.length > 0) {
-            message.warning("不允许移除已关联的危险源");
-            return;
+            modal.confirm({
+                title: "确认删除",
+                content: `将删除 ${removedKeys.length} 个风险源与区域"${selectedArea.area_name}"的关联，确定要继续吗？`,
+                onOk: async () => {
+                    try {
+                        // 立即更新 UI 状态
+                        setTargetKeys(nextTargetKeys);
+
+                        // 提取要删除的risk_source_id
+                        const riskSourceIdsToDelete = removedKeys.map(extractRiskSourceId);
+
+                        // 调用删除 API
+                        await deleteAreaToRiskMutation.mutateAsync({
+                            areaId: selectedArea.area_id,
+                            riskSourceIds: riskSourceIdsToDelete,
+                        });
+
+                        message.success("危险源关联删除成功");
+                    } catch (error) {
+                        console.error("删除危险源关联失败:", error);
+                        message.error("删除失败，请重试");
+
+                        // 失败时恢复到原来的状态
+                        setTargetKeys(currentKeys);
+                    }
+                },
+            });
         }
-
-        // 如果没有新增项，直接返回
-        if (addedKeys.length === 0) {
-            return;
-        }
-
-        modal.confirm({
-            title: "确认添加",
-            content: `将新增 ${addedKeys.length} 个风险源关联到区域"${selectedArea.area_name}"，确定要继续吗？`,
-            onOk: async () => {
-                try {
-                    // 立即更新 UI 状态
-                    setTargetKeys(nextTargetKeys);
-
-                    // 调用 API 保存更改
-                    await batchAreaToRiskMutation.mutateAsync({
-                        areaId: selectedArea.area_id,
-                        riskSourceIds: nextTargetKeys,
-                    });
-
-                    message.success("危险源关联添加成功");
-                } catch (error) {
-                    console.error("添加危险源关联失败:", error);
-                    message.error("添加失败，请重试");
-
-                    // 失败时恢复到原来的状态
-                    setTargetKeys(currentKeys);
-                }
-            },
-        });
     };
 
     /**
@@ -385,7 +424,11 @@ export default function AreaDetailDrawer() {
             title={
                 <div className="flex items-center justify-between">
                     <span>{selectedArea?.area_name}</span>
-                    <Button type="text" icon={<CloseOutlined />} onClick={closeDetailDrawer} />
+                    <Button
+                        type="text"
+                        icon={<CloseOutlined />}
+                        onClick={closeDetailDrawer}
+                    />
                 </div>
             }
             placement="bottom"
@@ -435,7 +478,7 @@ export default function AreaDetailDrawer() {
                     dataSource={allDataSource}
                     targetKeys={targetKeys}
                     onChange={_handleTransferChange}
-                    loading={isLoadingAllRiskData || batchAreaToRiskMutation.isPending}
+                    loading={isLoadingAllRiskData || batchAreaToRiskMutation.isPending || deleteAreaToRiskMutation.isPending}
                 />
             </Drawer>
         </Drawer>

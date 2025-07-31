@@ -1,4 +1,4 @@
-import { getAreaToRisk, batchAreaToRisk } from "./api";
+import { getAreaToRisk, batchAreaToRisk, deleteAreaToRisk } from "./api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 /**
@@ -33,6 +33,26 @@ export const useBatchAreaToRisk = () => {
         },
         onError: (error) => {
             console.error("批量关联区域和风险源失败:", error);
+        },
+    });
+};
+
+/**
+ * 批量删除区域和风险源关联
+ * @returns {Object} 批量删除mutation
+ */
+export const useDeleteAreaToRisk = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ areaId, riskSourceIds }) => deleteAreaToRisk(areaId, riskSourceIds),
+        onSuccess: (data, variables) => {
+            // 成功后刷新相关的查询
+            queryClient.invalidateQueries({ queryKey: ["areaToRisk", variables.areaId] });
+            queryClient.invalidateQueries({ queryKey: ["areaToRisk"] });
+        },
+        onError: (error) => {
+            console.error("批量删除区域和风险源关联失败:", error);
         },
     });
 };

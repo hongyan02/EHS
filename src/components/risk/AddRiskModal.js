@@ -1,5 +1,5 @@
 import { Modal, Form, Input, Select, InputNumber, Button, App } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 const { TextArea } = Input;
 
@@ -120,20 +120,23 @@ export default function AddRiskModal({
      * 处理部门变化
      * @param {string} department - 选中的部门
      */
-    const _handleDepartmentChange = (department) => {
-        setSelectedDepartment(department);
-        // 清空区域选择
-        form.setFieldValue("area", undefined);
-    };
+    const _handleDepartmentChange = useCallback(
+        (department) => {
+            setSelectedDepartment(department);
+            // 清空区域选择
+            form.setFieldValue("area", null);
+        },
+        [form]
+    );
 
     /**
      * 获取可选的区域列表
      * @returns {Array} 区域选项列表
      */
-    const _getAvailableAreas = () => {
+    const _getAvailableAreas = useCallback(() => {
         if (!selectedDepartment) return [];
         return DEPARTMENT_AREA_MAP[selectedDepartment] || [];
-    };
+    }, [selectedDepartment]);
 
     /**
      * 处理表单提交
@@ -182,6 +185,7 @@ export default function AddRiskModal({
                 level: level,
                 isMajorRisk: Boolean(values.isMajorRisk),
                 current_control_measures: values.current_control_measures?.trim() || "",
+                ...(editMode && initialData && { risk_source_id: initialData.risk_source_id }),
             };
 
             console.log("处理后的数据:", riskData);
@@ -191,7 +195,7 @@ export default function AddRiskModal({
             console.log("提交风险源数据:", riskData);
 
             if (editMode && initialData) {
-                // 编辑模式：传递 risk_source_id 和数据
+                // 编辑模式：传递包含 risk_source_id 的数据
                 await onSubmit({ riskSourceId: initialData.risk_source_id, data: riskData });
             } else {
                 // 新增模式：只传递数据
@@ -251,7 +255,10 @@ export default function AddRiskModal({
                                 label="产品系列"
                                 rules={[{ required: true, message: "请输入产品系列" }]}
                             >
-                                <Input placeholder="请输入产品系列" size="large" />
+                                <Input
+                                    placeholder="请输入产品系列"
+                                    size="large"
+                                />
                             </Form.Item>
                             <Form.Item
                                 name="department"
@@ -270,7 +277,10 @@ export default function AddRiskModal({
                                     }
                                 >
                                     {Object.keys(DEPARTMENT_AREA_MAP).map((department) => (
-                                        <Select.Option key={department} value={department}>
+                                        <Select.Option
+                                            key={department}
+                                            value={department}
+                                        >
                                             {department}
                                         </Select.Option>
                                     ))}
@@ -293,7 +303,10 @@ export default function AddRiskModal({
                                     }
                                 >
                                     {_getAvailableAreas().map((area) => (
-                                        <Select.Option key={area} value={area}>
+                                        <Select.Option
+                                            key={area}
+                                            value={area}
+                                        >
                                             {area}
                                         </Select.Option>
                                     ))}
@@ -306,14 +319,20 @@ export default function AddRiskModal({
                                 label="工作岗位"
                                 rules={[{ required: true, message: "请输入工作岗位" }]}
                             >
-                                <Input placeholder="请输入工作岗位" size="large" />
+                                <Input
+                                    placeholder="请输入工作岗位"
+                                    size="large"
+                                />
                             </Form.Item>
                             <Form.Item
                                 name="work_activity"
                                 label="作业活动"
                                 rules={[{ required: true, message: "请输入作业活动" }]}
                             >
-                                <Input placeholder="请输入作业活动" size="large" />
+                                <Input
+                                    placeholder="请输入作业活动"
+                                    size="large"
+                                />
                             </Form.Item>
                         </div>
                     </div>
@@ -355,13 +374,19 @@ export default function AddRiskModal({
                                     }
                                 >
                                     {ACCIDENT_TYPES.map((type) => (
-                                        <Select.Option key={type} value={type}>
+                                        <Select.Option
+                                            key={type}
+                                            value={type}
+                                        >
                                             {type}
                                         </Select.Option>
                                     ))}
                                 </Select>
                             </Form.Item>
-                            <Form.Item name="accident_case" label="事故案例">
+                            <Form.Item
+                                name="accident_case"
+                                label="事故案例"
+                            >
                                 <TextArea
                                     rows={1}
                                     placeholder="请输入事故案例（可选）"
@@ -371,8 +396,14 @@ export default function AddRiskModal({
                                 />
                             </Form.Item>
                         </div>
-                        <Form.Item name="occupational_disease" label="职业病危害因素">
-                            <Input placeholder="请输入职业病危害因素（可选）" size="large" />
+                        <Form.Item
+                            name="occupational_disease"
+                            label="职业病危害因素"
+                        >
+                            <Input
+                                placeholder="请输入职业病危害因素（可选）"
+                                size="large"
+                            />
                         </Form.Item>
                     </div>
                 </div>
@@ -419,7 +450,10 @@ export default function AddRiskModal({
                                 label="是否重大风险"
                                 rules={[{ required: true, message: "请选择是否为重大风险" }]}
                             >
-                                <Select placeholder="请选择" size="large">
+                                <Select
+                                    placeholder="请选择"
+                                    size="large"
+                                >
                                     <Select.Option value={true}>是</Select.Option>
                                     <Select.Option value={false}>否</Select.Option>
                                 </Select>
@@ -471,10 +505,17 @@ export default function AddRiskModal({
 
                 {/* 底部按钮 */}
                 <div className="flex justify-end gap-2 mt-6 pt-4 border-t">
-                    <Button onClick={_handleCancel} disabled={loading}>
+                    <Button
+                        onClick={_handleCancel}
+                        disabled={loading}
+                    >
                         取消
                     </Button>
-                    <Button type="primary" htmlType="submit" loading={loading}>
+                    <Button
+                        type="primary"
+                        htmlType="submit"
+                        loading={loading}
+                    >
                         {loading
                             ? editMode
                                 ? "更新中..."
