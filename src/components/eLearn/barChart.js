@@ -67,6 +67,11 @@ export default function BarChart({ dataSource = [] }) {
             data: departments,
             axisLabel: {
                 fontSize: 12,
+                rotate: 45,
+                interval: 0,
+                textStyle: {
+                    fontSize: 12,
+                },
             },
         },
         yAxis: {
