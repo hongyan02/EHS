@@ -65,12 +65,12 @@ export default function NavigationPage() {
             status: "active",
         },
         {
-            id: "simple",
-            title: "简单编辑器",
-            description: "轻量级文档编辑工具",
+            id: "accident",
+            title: "事故事件台账",
+            description: "事故事件台账管理",
             icon: <EditOutlined />,
             color: "#722ed1",
-            path: "/simple",
+            path: "/accident",
             status: "active",
         },
     ];

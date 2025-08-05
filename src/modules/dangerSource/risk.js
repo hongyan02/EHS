@@ -84,10 +84,17 @@ export default function Risk() {
      */
     const _renderAction = (_, record) => (
         <div className="flex gap-2">
-            <Button type="link" size="small">
+            <Button
+                type="link"
+                size="small"
+            >
                 查看
             </Button>
-            <Button type="link" size="small" onClick={() => _handleEdit(record)}>
+            <Button
+                type="link"
+                size="small"
+                onClick={() => _handleEdit(record)}
+            >
                 编辑
             </Button>
             <Button
@@ -421,7 +428,12 @@ export default function Risk() {
                     <ReloadOutlined />
                     重置
                 </Button>
-                <Button type="dashed" color="primary" size="large" onClick={_handleAdd}>
+                <Button
+                    type="dashed"
+                    color="primary"
+                    size="large"
+                    onClick={_handleAdd}
+                >
                     <PlusOutlined />
                     添加
                 </Button>
