@@ -27,12 +27,15 @@
         "@tiptap/react": "^2.25.0",
         "@tiptap/starter-kit": "^2.25.0",
         "antd": "^5.26.3",
+        "drizzle-orm": "^0.44.4",
         "echarts": "^5.6.0",
         "echarts-for-react": "^3.0.2",
+        "mysql2": "^3.14.3",
         "next": "15.3.5",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "xlsx": "^0.18.5",
+        "zod": "^4.0.14",
         "zustand": "^5.0.6"
     },
     "devDependencies": {
@@ -40,9 +43,12 @@
         "@tailwindcss/postcss": "^4",
         "@types/node": "24.1.0",
         "@types/react": "19.1.8",
+        "dotenv-cli": "^10.0.0",
+        "drizzle-kit": "^0.31.4",
         "eslint": "^9",
         "eslint-config-next": "15.3.5",
         "sass": "^1.89.2",
-        "tailwindcss": "^4"
+        "tailwindcss": "^4",
+        "tsx": "^4.20.3"
     }
 }
