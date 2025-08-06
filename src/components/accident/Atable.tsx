@@ -377,11 +377,11 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
     }
 
     return (
-        <div className="w-full overflow-x-auto">
+        <div className="w-full h-full">
             <Table 
                 columns={columns} 
                 dataSource={dataSource} 
-                scroll={{ x: 5500 }} 
+                scroll={{ x: 5500, y: 'calc(100vh - 200px)' }} 
                 size="middle"
                 rowKey={(record) => record.id}
                 loading={isLoading}

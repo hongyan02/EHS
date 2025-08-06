@@ -92,21 +92,25 @@ export default function AccidentPage(): React.JSX.Element {
     };
 
     return (
-        <div className="p-6">
-            {/* 操作按钮栏 */}
-            <ActionButtons 
-                selectedRowKeys={selectedRowKeys}
-                selectedIds={selectedIds}
-                onAdd={handleAdd} 
-                onEdit={handleEdit} 
-                onDelete={handleDelete} 
-            />
+        <div className="h-screen flex flex-col">
+            <div className="p-6 flex-shrink-0">
+                {/* 操作按钮栏 */}
+                <ActionButtons 
+                    selectedRowKeys={selectedRowKeys}
+                    selectedIds={selectedIds}
+                    onAdd={handleAdd} 
+                    onEdit={handleEdit} 
+                    onDelete={handleDelete} 
+                />
+            </div>
             
             {/* 表格组件 */}
-            <ATable 
-                selectedRowKeys={selectedRowKeys}
-                onSelectionChange={handleSelectionChange}
-            />
+            <div className="flex-1 overflow-hidden px-6 pb-6">
+                <ATable 
+                    selectedRowKeys={selectedRowKeys}
+                    onSelectionChange={handleSelectionChange}
+                />
+            </div>
 
             {/* 表单弹窗 */}
             <Modal
