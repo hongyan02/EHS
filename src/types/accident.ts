@@ -28,3 +28,12 @@ export interface AccidentActionButtonsProps {
     onEdit?: (id: string) => void;
     onDelete?: (ids: string[]) => void;
 }
+
+// 表单组件的Props类型
+export interface AccidentFormProps {
+    mode: 'create' | 'edit';
+    initialData?: Partial<AccidentData>;
+    onSubmit: (values: Partial<AccidentData>) => void;
+    onCancel: () => void;
+    loading?: boolean;
+}

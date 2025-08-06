@@ -1,12 +1,25 @@
 "use client"
 import React, { useState } from "react";
+import { Modal, App } from "antd";
 import ATable from "@/components/accident/Atable";
 import ActionButtons from "@/components/accident/ActionButtons";
+import AccidentForm from "@/components/accident/AccidentForm";
+import { useCreateAccident, useUpdateAccident, useDeleteAccident } from "@/queries/accidents";
 import type { AccidentData, AccidentSelectionState } from "@/types/accident";
 
 export default function AccidentPage(): React.JSX.Element {
+    const { message } = App.useApp();
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [selectedRows, setSelectedRows] = useState<AccidentData[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [formMode, setFormMode] = useState<'create' | 'edit'>('create');
+    const [editingData, setEditingData] = useState<AccidentData | undefined>(undefined);
+    const [formLoading, setFormLoading] = useState(false);
+
+    // React Query hooks
+    const createAccidentMutation = useCreateAccident();
+    const updateAccidentMutation = useUpdateAccident();
+    const deleteAccidentMutation = useDeleteAccident();
 
     // 处理行选择变化
     const handleSelectionChange = (selectedRowKeys: React.Key[], selectedRows: AccidentData[]) => {
@@ -18,21 +31,64 @@ export default function AccidentPage(): React.JSX.Element {
     const selectedIds = selectedRows.map(row => row.id).filter(Boolean);
 
     const handleAdd = () => {
-        console.log("新增事故记录");
-        // TODO: 实现新增功能
+        setFormMode('create');
+        setEditingData(undefined);
+        setIsModalOpen(true);
     };
 
     const handleEdit = (id: string) => {
-        console.log("编辑事故记录，ID:", id);
-        // TODO: 实现编辑功能，传递选中的ID
+        const editData = selectedRows.find(row => row.id === id);
+        if (editData) {
+            setFormMode('edit');
+            setEditingData(editData);
+            setIsModalOpen(true);
+        } else {
+            message.error('未找到要编辑的记录');
+        }
     };
 
-    const handleDelete = (ids: string[]) => {
-        console.log("删除事故记录，IDs:", ids);
-        // TODO: 实现删除功能，传递选中的ID数组
-        // 删除成功后清空选择
-        // setSelectedRowKeys([]);
-        // setSelectedRows([]);
+    const handleDelete = async (ids: string[]) => {
+        try {
+            // 批量删除
+            await Promise.all(ids.map(id => deleteAccidentMutation.mutateAsync(id)));
+            message.success(`成功删除 ${ids.length} 条记录`);
+            // 删除成功后清空选择
+            setSelectedRowKeys([]);
+            setSelectedRows([]);
+        } catch (error) {
+            message.error('删除失败');
+            console.error('删除事故记录失败:', error);
+        }
+    };
+
+    const handleFormSubmit = async (values: Partial<AccidentData>) => {
+        setFormLoading(true);
+        try {
+            if (formMode === 'create') {
+                await createAccidentMutation.mutateAsync(values as AccidentData);
+                message.success('事故记录创建成功');
+            } else {
+                if (editingData?.id) {
+                    await updateAccidentMutation.mutateAsync({ 
+                        id: editingData.id, 
+                        ...values 
+                    } as AccidentData);
+                    message.success('事故记录更新成功');
+                }
+            }
+            setIsModalOpen(false);
+            setEditingData(undefined);
+        } catch (error) {
+            message.error(formMode === 'create' ? '创建失败' : '更新失败');
+            console.error('表单提交失败:', error);
+        } finally {
+            setFormLoading(false);
+        }
+    };
+
+    const handleFormCancel = () => {
+        setIsModalOpen(false);
+        setEditingData(undefined);
     };
 
     return (
@@ -51,6 +107,25 @@ export default function AccidentPage(): React.JSX.Element {
                 selectedRowKeys={selectedRowKeys}
                 onSelectionChange={handleSelectionChange}
             />
+
+            {/* 表单弹窗 */}
+            <Modal
+                title={formMode === 'create' ? '新增事故记录' : '编辑事故记录'}
+                open={isModalOpen}
+                onCancel={handleFormCancel}
+                footer={null}
+                width={1400}
+                // destroyOnClose
+                destroyOnHidden
+            >
+                <AccidentForm
+                    mode={formMode}
+                    initialData={editingData}
+                    onSubmit={handleFormSubmit}
+                    onCancel={handleFormCancel}
+                    loading={formLoading}
+                />
+            </Modal>
         </div>
     );
 }

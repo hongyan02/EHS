@@ -10,7 +10,7 @@ export const accident = mysqlTable("accident", {
     product_line: varchar("product_line", { length: 255 }).notNull(),
     detail_place: varchar("detail_place", { length: 255 }).notNull(),
     self_ignite_cell_type: varchar("self_ignite_cell_type", { length: 255 }).notNull(),
-    self_ignite_cell_number: int("self_ignite_cell_number").notNull(),
+    self_ignite_cell_number: varchar("self_ignite_cell_number", { length: 255 }).notNull(),
     battery_self_ignite_reason: varchar("battery_self_ignite_reason", { length: 500 }).notNull(),
     detail_content: text("detail_content").notNull(),
     accident_or_event: varchar("accident_or_event", { length: 50 }).notNull(),
