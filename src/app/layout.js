@@ -4,6 +4,7 @@ import zhCN from "antd/locale/zh_CN";
 import { ConfigProvider, App } from "antd";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { Providers } from "./providers";
+import ScrollHandler from "@/components/ScrollHandler";
 import "./globals.css";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
@@ -48,6 +49,7 @@ export default function RootLayout({ children }) {
                 >
                     <AntdRegistry>
                         <App>
+                            <ScrollHandler />
                             <Providers>{children}</Providers>
                         </App>
                     </AntdRegistry>
