@@ -62,11 +62,11 @@ export default function ActionButtons({
                     删除
                 </Button>
             </Space>
-            {selectedRowKeys.length > 0 && (
+            {/* {selectedRowKeys.length > 0 && (
                 <div className="mt-2 text-sm text-gray-600">
                     已选择 {selectedRowKeys.length} 条记录
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

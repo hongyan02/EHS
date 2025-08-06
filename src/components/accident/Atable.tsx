@@ -16,6 +16,8 @@ interface ATableProps {
 
 export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentTableProps): React.JSX.Element {
     const { data: accidents, isLoading, error } = useAccidents();
+    const [currentPage, setCurrentPage] = React.useState(1);
+    const [pageSize, setPageSize] = React.useState(10);
 
     // 处理数据格式
     const dataSource: AccidentTableRow[] = React.useMemo(() => {
@@ -44,7 +46,7 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 80,
             render: (_: any, __: AccidentTableRow, index: number) => {
-                return index + 1;
+                return (currentPage - 1) * pageSize + index + 1;
             },
         },
         {
@@ -386,6 +388,16 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
                 rowSelection={rowSelection}
                 pagination={{
                     showQuickJumper: true,
+                    current: currentPage,
+                    pageSize: pageSize,
+                    onChange: (page, size) => {
+                        setCurrentPage(page);
+                        setPageSize(size || 10);
+                    },
+                    onShowSizeChange: (current, size) => {
+                        setCurrentPage(current);
+                        setPageSize(size);
+                    },
                 }}
             />
         </div>
