@@ -10,6 +10,8 @@ export interface StockItem {
   title: string;
   /** 物料编号 */
   number: string;
+  /** 单位 */
+  unit: string;
   /** 当前库存数量 */
   count: string;
   /** 库存阈值 */
