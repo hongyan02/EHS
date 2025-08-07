@@ -1,7 +1,8 @@
 "use client";
 import { Card, Row, Col } from "antd";
-import { InboxOutlined, DatabaseOutlined } from "@ant-design/icons";
+import { InboxOutlined, DatabaseOutlined, MedicineBoxOutlined } from "@ant-design/icons";
 import Link from "next/link";
+import ShowInList from "@/components/materials/ShowInList";
 
 export default function Page() {
     return (
@@ -29,12 +30,31 @@ export default function Page() {
                             styles={{ body: { padding: '24px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } }}
                         >
                             <DatabaseOutlined className="text-4xl text-green-500 mb-4" />
-                            <h3 className="text-lg font-semibold mb-2">库存管理</h3>
+                            <h3 className="text-lg font-semibold mb-2">物料库存</h3>
                             <p className="text-gray-600">查看和管理物料库存信息</p>
                         </Card>
                     </Link>
                 </Col>
+
+                <Col xs={24} sm={12} lg={8}>
+                    <Link href="/materials/medicine">
+                        <Card 
+                            className="h-40 flex flex-col justify-center items-center text-center cursor-pointer transition-all duration-300 hover:bg-gray-100"
+                            styles={{ body: { padding: '24px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' } }}
+                        >
+                            <MedicineBoxOutlined className="text-4xl text-green-500 mb-4" />
+                            <h3 className="text-lg font-semibold mb-2">急救药品库存</h3>
+                            <p className="text-gray-600">查看和管理急救药品库存信息</p>
+                        </Card>
+                    </Link>
+                </Col>
             </Row>
+            
+            {/* 正在进行中的需求 */}
+            <div className="mt-8">
+                <h2 className="text-xl font-semibold mb-4">待入库物料</h2>
+                <ShowInList />
+            </div>
         </div>
     )
 }

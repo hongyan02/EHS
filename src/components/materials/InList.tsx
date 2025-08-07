@@ -28,6 +28,22 @@ export default function InList() {
             current: 2,
             status: "finish",
         },
+        {
+            title: "XXX申请消防用品",
+            number: "wz123456784",
+            applicant: "李泓言",
+            applicatioDate: "2025-08-07",
+            current: 2,
+            status: "finish",
+        },
+        {
+            title: "井盖标示牌用料",
+            number: "wz123456785",
+            applicant: "李泓言",
+            applicatioDate: "2025-08-07",
+            current: 2,
+            status: "finish",
+        },
     ];
 
     const items = [
