@@ -3,6 +3,7 @@ import { Card, Row, Col } from "antd";
 import { InboxOutlined, DatabaseOutlined, MedicineBoxOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import ShowInList from "@/components/materials/ShowInList";
+import ShowNone from "@/components/materials/ShowNone";
 
 export default function Page() {
     return (
@@ -54,6 +55,12 @@ export default function Page() {
             <div className="mt-8">
                 <h2 className="text-xl font-semibold mb-4">待入库物料</h2>
                 <ShowInList />
+            </div>
+
+            {/* 药品库存 */}
+            <div className="mt-8">
+                <h2 className="text-xl font-semibold mb-4">待补充物料与药品</h2>
+                <ShowNone />
             </div>
         </div>
     )
