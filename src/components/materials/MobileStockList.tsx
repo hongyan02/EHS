@@ -126,7 +126,7 @@ export default function MobileStockList() {
                     key={item.key}
                     size="small"
                     className="shadow-sm hover:shadow-md transition-all duration-200 border-0 bg-white rounded-lg"
-                    bodyStyle={{ padding: "8px 12px" }}
+                    styles={{ body: { padding: "8px 12px" } }}
                 >
                     {renderMobileItem(item)}
                 </Card>
