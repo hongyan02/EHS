@@ -16,7 +16,6 @@ body {
     background-clip: content-box;
     border: 2px solid transparent;
 }
-body[scroll],
 ::-webkit-scrollbar-thumb:hover {
     transition: 0s;
     background-color: rgba(0, 0, 0, 0.5);
