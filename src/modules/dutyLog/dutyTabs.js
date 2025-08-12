@@ -2,7 +2,6 @@
 import { Tabs } from "antd";
 import DutyLogCalendar from "../../components/calendar/calendar.js";
 import CollapseDate from "./collapseDate.js";
-import LogForm from "../../components/calendar/LogForm.js";
 import DutyLog from "./dutyLog.js";
 import WriteLog from "./writeLog.js";
 
@@ -38,7 +37,11 @@ export default function DutyTabs() {
 
     return (
         <div className="p-4">
-            <Tabs items={desktopItems} type="card" defaultActiveKey="1" />
+            <Tabs
+                items={desktopItems}
+                type="card"
+                defaultActiveKey="1"
+            />
         </div>
     );
 }
