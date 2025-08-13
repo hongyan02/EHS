@@ -10,22 +10,6 @@ const year = getCurrentYear();
 const month = getCurrentMonth();
 const week = getCurrentWeekOfMonth();
 
-function getRowSpan(index) {
-    if (index === 0) {
-        return 4;
-    }
-    if (index === 1) {
-        return 0;
-    }
-    if (index === 2) {
-        return 2;
-    }
-    if (index === 3) {
-        return 0;
-    }
-    return 1;
-}
-
 // 合并表格的列配置
 const Columns = [
     {
@@ -44,12 +28,27 @@ const Columns = [
         },
     },
     {
+        title: "星期",
+        dataIndex: "week",
+        key: "week",
+        onCell: (_, index) => {
+            const groupSize = 4; // 每组的行数
+            if (index % groupSize === 0) {
+                // 每组第一行
+                return { rowSpan: groupSize };
+            } else {
+                // 被合并掉的行
+                return { rowSpan: 0 };
+            }
+        },
+    },
+    {
         title: "人员",
         dataIndex: "position",
         key: "position",
     },
     {
-        title: "白班",
+        title: "白班(8.30-20.30)",
         children: [
             {
                 title: "姓名",
@@ -78,7 +77,7 @@ const Columns = [
         },
     },
     {
-        title: "夜班",
+        title: "夜班(20.30-次日8.30)",
         children: [
             {
                 title: "姓名",

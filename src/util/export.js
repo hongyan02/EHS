@@ -87,19 +87,64 @@ export const exportWeekTableToExcel = async (
         // 添加标题行
         wsData.push([title]);
 
-        // 添加表头
+        // 添加表头第一行
         wsData.push([
             "日期",
+            "星期",
             "人员",
-            "白班-姓名",
-            "白班-联系方式",
-            "夜班-人员",
-            "夜班-姓名",
-            "夜班-联系方式",
+            "白班(8.30-20.30)",
+            "",
+            "人员",
+            "夜班(20.30-次日8.30)",
+            "",
+        ]);
+        
+        // 添加表头第二行
+        wsData.push([
+            "",
+            "",
+            "",
+            "姓名",
+            "联系方式",
+            "",
+            "姓名",
+            "联系方式",
         ]);
 
-        let currentRow = 2; // 从第3行开始（0索引）
+        let currentRow = 3; // 从第4行开始（0索引，标题占第1行，表头占第2-3行）
         const merges = []; // 存储合并单元格信息
+        
+        // 添加表头合并单元格
+        // 日期列合并（第2-3行）
+        merges.push({
+            s: { r: 1, c: 0 },
+            e: { r: 2, c: 0 },
+        });
+        // 星期列合并（第2-3行）
+        merges.push({
+            s: { r: 1, c: 1 },
+            e: { r: 2, c: 1 },
+        });
+        // 人员列合并（第2-3行）
+        merges.push({
+            s: { r: 1, c: 2 },
+            e: { r: 2, c: 2 },
+        });
+        // 白班标题合并（第2行，3-4列）
+        merges.push({
+            s: { r: 1, c: 3 },
+            e: { r: 1, c: 4 },
+        });
+        // 人员列合并（第2-3行）
+        merges.push({
+            s: { r: 1, c: 5 },
+            e: { r: 2, c: 5 },
+        });
+        // 夜班标题合并（第2行，6-7列）
+        merges.push({
+            s: { r: 1, c: 6 },
+            e: { r: 1, c: 7 },
+        });
 
         // 标题合并
         merges.push({ s: { r: 0, c: 0 }, e: { r: 0, c: 6 } });
@@ -114,6 +159,7 @@ export const exportWeekTableToExcel = async (
                 dateGroup.forEach((item, index) => {
                     const row = [
                         item.duty_date,
+                        item.week || "",
                         item.position || "",
                         item.day_person || "",
                         item.day_phone || "",
@@ -132,6 +178,11 @@ export const exportWeekTableToExcel = async (
                         s: { r: groupStartRow, c: 0 },
                         e: { r: groupStartRow + dateGroup.length - 1, c: 0 },
                     });
+                    // 添加星期列合并（整个日期组）
+                    merges.push({
+                        s: { r: groupStartRow, c: 1 },
+                        e: { r: groupStartRow + dateGroup.length - 1, c: 1 },
+                    });
                 }
 
                 // 添加夜班列合并（每2行合并一次）
@@ -139,18 +190,18 @@ export const exportWeekTableToExcel = async (
                     if (i + 1 < dateGroup.length) {
                         // 夜班-人员列合并
                         merges.push({
-                            s: { r: groupStartRow + i, c: 4 },
-                            e: { r: groupStartRow + i + 1, c: 4 },
-                        });
-                        // 夜班-姓名列合并
-                        merges.push({
                             s: { r: groupStartRow + i, c: 5 },
                             e: { r: groupStartRow + i + 1, c: 5 },
                         });
-                        // 夜班-联系方式列合并
+                        // 夜班-姓名列合并
                         merges.push({
                             s: { r: groupStartRow + i, c: 6 },
                             e: { r: groupStartRow + i + 1, c: 6 },
+                        });
+                        // 夜班-联系方式列合并
+                        merges.push({
+                            s: { r: groupStartRow + i, c: 7 },
+                            e: { r: groupStartRow + i + 1, c: 7 },
                         });
                     }
                 }
@@ -171,29 +222,29 @@ export const exportWeekTableToExcel = async (
                 "9、如当班人员因事要调班的，应自行沟通好替班人员《注：必须为同级别人员》，确保不能出现缺岗空岗情况。并将替班情况报告安全管理群。",
             ].join("\n");
 
-        wsData.push([requirementsWithTitle, "", "", "", "", "", ""]);
+        wsData.push([requirementsWithTitle, "", "", "", "", "", "", ""]);
         merges.push({
             s: { r: currentRow, c: 0 },
-            e: { r: currentRow, c: 6 }
+            e: { r: currentRow, c: 7 },
         });
         currentRow++;
-        
+
         // 添加制作、审批、签批行
-        wsData.push(["制作：", "", "审批：", "", "签批：", "", ""]);
+        wsData.push(["制作：", "", "审批：", "", "签批：", "", "", ""]);
         // 制作占两列（0-1列）
         merges.push({
             s: { r: currentRow, c: 0 },
-            e: { r: currentRow, c: 1 }
+            e: { r: currentRow, c: 1 },
         });
         // 审批占两列（2-3列）
         merges.push({
             s: { r: currentRow, c: 2 },
-            e: { r: currentRow, c: 3 }
+            e: { r: currentRow, c: 3 },
         });
-        // 签批占三列（4-6列）
+        // 签批占四列（4-7列）
         merges.push({
             s: { r: currentRow, c: 4 },
-            e: { r: currentRow, c: 6 }
+            e: { r: currentRow, c: 7 },
         });
         currentRow++;
 
@@ -206,6 +257,7 @@ export const exportWeekTableToExcel = async (
         // 设置列宽
         ws["!cols"] = [
             { wch: 12 }, // 日期
+            { wch: 8 }, // 星期
             { wch: 15 }, // 人员
             { wch: 12 }, // 白班-姓名
             { wch: 15 }, // 白班-联系方式
@@ -270,8 +322,8 @@ export const exportWeekTableToExcel = async (
                     };
                 }
 
-                // 表头行特殊样式
-                if (R === 1) {
+                // 表头行特殊样式（第2-3行）
+                if (R === 1 || R === 2) {
                     ws[cellAddress].s.font = {
                         name: "宋体",
                         sz: 11,

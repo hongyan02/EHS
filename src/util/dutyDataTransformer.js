@@ -27,6 +27,17 @@ const SHIFT_TYPE_MAP = {
 };
 
 /**
+ * 获取星期几的中文表示
+ * @param {string} dateString - 日期字符串
+ * @returns {string} 中文星期
+ */
+function getChineseWeekday(dateString) {
+    const weekdays = ["日", "一", "二", "三", "四", "五", "六"];
+    const date = new Date(dateString);
+    return weekdays[date.getDay()];
+}
+
+/**
  * 将API数据转换为表格数据格式
  * @param {Object} apiResponse - API响应数据
  * @returns {Array} 转换后的表格数据
@@ -50,6 +61,7 @@ export function transformDutyDataForTable(apiResponse) {
             if (!groupedData[key]) {
                 groupedData[key] = {
                     duty_date: duty_date,
+                    week: getChineseWeekday(duty_date), // 添加星期字段
                     position: position,
                     day_person: "",
                     day_phone: "",
