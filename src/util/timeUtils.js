@@ -107,3 +107,44 @@ export function formatTime(date = new Date()) {
 export function formatDateTime(date = new Date()) {
     return `${formatDate(date)} ${formatTime(date)}`;
 }
+
+/**
+ * 获取当前周的日期范围（最多7天）
+ * @returns {Object} 包含开始日期和结束日期的对象
+ */
+export function getCurrentWeekDateRange() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const currentWeek = getCurrentWeekOfMonth();
+
+    // 获取当月第一天
+    const firstDay = new Date(year, month, 1);
+    const firstDayOfWeek = firstDay.getDay();
+
+    // 计算当前周的开始日期
+    let weekStartDate;
+    if (currentWeek === 1) {
+        // 第一周从当月第一天开始
+        weekStartDate = new Date(year, month, 1);
+    } else {
+        // 其他周的开始日期
+        const daysFromFirstWeek = (currentWeek - 1) * 7 - firstDayOfWeek + 1;
+        weekStartDate = new Date(year, month, 1 + daysFromFirstWeek);
+    }
+
+    // 计算当前周的结束日期（最多7天）
+    const weekEndDate = new Date(weekStartDate);
+    weekEndDate.setDate(weekStartDate.getDate() + 6);
+
+    // 确保不超过当月最后一天
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    if (weekEndDate > lastDayOfMonth) {
+        weekEndDate.setTime(lastDayOfMonth.getTime());
+    }
+
+    return {
+        startDate: formatDate(weekStartDate),
+        endDate: formatDate(weekEndDate),
+    };
+}

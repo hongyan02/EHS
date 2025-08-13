@@ -1,28 +1,40 @@
 "use client";
 import WeekTable from "@/components/calendar/WeekTable";
 import { useDutyLogCalendarList } from "@/queries/dutyLog/calendar/index";
-import { Spin, Alert } from "antd";
+import { Spin, Alert, DatePicker } from "antd";
+import { useState } from "react";
+import dayjs from "dayjs";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+import isoWeek from "dayjs/plugin/isoWeek";
+
+// 扩展dayjs插件
+dayjs.extend(weekOfYear);
+dayjs.extend(isoWeek);
 
 export default function WeekPage() {
-    // 获取当月的开始和结束日期
-    const getCurrentMonthRange = () => {
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
+    // 状态管理：选择的周
+    const [selectedWeek, setSelectedWeek] = useState(dayjs());
 
-        // 当月第一天
-        const startDate = new Date(year, month, 1);
-        // 当月最后一天
-        const endDate = new Date(year, month + 1, 0);
+    // 根据选择的周获取日期范围
+    const getWeekRange = (weekDate) => {
+        const startOfWeek = weekDate.startOf('isoWeek'); // 周一开始
+        const endOfWeek = weekDate.endOf('isoWeek'); // 周日结束
 
         return {
-            start_duty_date: startDate.toISOString().split("T")[0], // yyyy-mm-dd格式
-            end_duty_date: endDate.toISOString().split("T")[0], // yyyy-mm-dd格式
+            start_duty_date: startOfWeek.format('YYYY-MM-DD'),
+            end_duty_date: endOfWeek.format('YYYY-MM-DD'),
         };
     };
 
-    // 获取当前月的值班数据
-    const { data: dutyData, isLoading, error } = useDutyLogCalendarList(getCurrentMonthRange());
+    // 处理周选择变化
+    const handleWeekChange = (date) => {
+        if (date) {
+            setSelectedWeek(date);
+        }
+    };
+
+    // 获取选择周的值班数据
+    const { data: dutyData, isLoading, error } = useDutyLogCalendarList(getWeekRange(selectedWeek));
 
     if (isLoading) {
         return (
@@ -47,9 +59,33 @@ export default function WeekPage() {
         );
     }
 
+    // 创建周选择器组件
+    const weekSelector = (
+        <DatePicker
+            picker="week"
+            value={selectedWeek}
+            onChange={handleWeekChange}
+            format="YYYY年第WW周"
+            placeholder="请选择周"
+            style={{ width: '200px' }}
+            allowClear={false}
+        />
+    );
+
+    // 获取选择周的信息
+    const selectedWeekInfo = {
+        title: selectedWeek.format('YYYY年第WW周'),
+        startDate: getWeekRange(selectedWeek).start_duty_date,
+        endDate: getWeekRange(selectedWeek).end_duty_date,
+    };
+
     return (
         <div>
-            <WeekTable apiData={{ data: dutyData }} />
+            <WeekTable 
+                apiData={{ data: dutyData }} 
+                weekSelector={weekSelector}
+                selectedWeekInfo={selectedWeekInfo}
+            />
         </div>
     );
 }

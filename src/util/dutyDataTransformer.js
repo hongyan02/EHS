@@ -3,6 +3,8 @@
  * 用于将API返回的值班数据转换为表格组件可用的格式
  */
 
+import { getCurrentWeekDateRange } from "./timeUtils";
+
 /**
  * 职位映射表
  */
@@ -40,18 +42,28 @@ function getChineseWeekday(dateString) {
 /**
  * 将API数据转换为表格数据格式
  * @param {Object} apiResponse - API响应数据
+ * @param {Object} dateRange - 可选的日期范围 {startDate, endDate}
  * @returns {Array} 转换后的表格数据
  */
-export function transformDutyDataForTable(apiResponse) {
+export function transformDutyDataForTable(apiResponse, dateRange = null) {
     if (!apiResponse || !apiResponse.data || !Array.isArray(apiResponse.data)) {
         return [];
     }
 
+    // 使用传入的日期范围或获取当前周的日期范围
+    const { startDate, endDate } = dateRange || getCurrentWeekDateRange();
+
     // 按日期和职位分组数据
     const groupedData = {};
 
-    apiResponse.data.forEach((item) => {
+    apiResponse.data.forEach((item, index) => {
         const { duty_date, shift_type, employees } = item;
+
+        // 只处理当前周范围内的数据
+        if (duty_date < startDate || duty_date > endDate) {
+            return;
+        }
+
         const shiftKey = SHIFT_TYPE_MAP[shift_type] || "day";
 
         employees.forEach((employee) => {
