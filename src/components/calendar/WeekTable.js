@@ -2,13 +2,19 @@
 import { Table, Button } from "antd";
 import { useMemo } from "react";
 import { DownloadOutlined } from "@ant-design/icons";
-import { getCurrentYear, getCurrentMonth, getCurrentWeekOfMonth } from "@/util/timeUtils";
+import {
+    getCurrentYear,
+    getCurrentMonth,
+    getCurrentWeekOfMonth,
+    getCurrentWeekDateRange,
+} from "@/util/timeUtils";
 import { transformDutyDataForTable } from "@/util/dutyDataTransformer";
 import { exportWeekTableToExcel } from "@/util/export";
 
 const year = getCurrentYear();
 const month = getCurrentMonth();
 const week = getCurrentWeekOfMonth();
+const { startDate, endDate } = getCurrentWeekDateRange();
 
 // 合并表格的列配置
 const Columns = [
@@ -111,7 +117,11 @@ const Columns = [
     },
 ];
 
-export default function WeekTable({ apiData = null }) {
+export default function WeekTable({
+    apiData = null,
+    weekSelector = null,
+    selectedWeekInfo = null,
+}) {
     // 使用useMemo优化数据转换性能
     const tableData = useMemo(() => {
         if (!apiData) {
@@ -119,12 +129,23 @@ export default function WeekTable({ apiData = null }) {
             return [];
         }
 
-        const transformedData = transformDutyDataForTable(apiData);
+        // 使用选择的周信息构建日期范围
+        const dateRange = selectedWeekInfo
+            ? {
+                  startDate: selectedWeekInfo.startDate,
+                  endDate: selectedWeekInfo.endDate,
+              }
+            : null;
+
+        const transformedData = transformDutyDataForTable(apiData, dateRange);
+
         // 为每行数据添加key
-        return transformedData.map((item, index) => ({
+        const result = transformedData.map((item, index) => ({
             ...item,
             key: `${item.duty_date}_${item.position}_${index}`,
         }));
+
+        return result;
     }, [apiData]);
 
     // 导出功能
@@ -134,26 +155,43 @@ export default function WeekTable({ apiData = null }) {
             return;
         }
 
-        const title = `8BU-60A工厂${year}年${month}月第${week}周应急值班表`;
-        const filename = `8BU-60A工厂_${year}年${month}月第${week}周_应急值班表`;
+        // 使用传入的selectedWeekInfo或默认值
+        const exportTitle = selectedWeekInfo
+            ? selectedWeekInfo.title
+            : `${year}年${month}月第${week}周`;
+        const exportStartDate = selectedWeekInfo ? selectedWeekInfo.startDate : startDate;
+        const exportEndDate = selectedWeekInfo ? selectedWeekInfo.endDate : endDate;
+
+        const title = `8BU-60A工厂${exportTitle}应急值班表（${exportStartDate}至${exportEndDate}）`;
+        const filename = `8BU-60A工厂_${exportTitle}_应急值班表_${exportStartDate}至${exportEndDate}`;
         await exportWeekTableToExcel(tableData, title, filename);
     };
 
     return (
         <div>
             {/* 表格标题和导出按钮 */}
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center mb-4">
+                {/* 周选择器 */}
+                <div className="flex-shrink-0">{weekSelector}</div>
+
+                {/* 标题 */}
                 <div className="flex-1 text-center font-bold text-2xl">
-                    8BU-60A工厂{year}年{month}月第{week}周应急值班表
+                    8BU-60A工厂
+                    {selectedWeekInfo ? selectedWeekInfo.title : `${year}年${month}月第${week}周`}
+                    应急值班表
                 </div>
-                <Button
-                    type="primary"
-                    icon={<DownloadOutlined />}
-                    onClick={handleExport}
-                    disabled={!tableData || tableData.length === 0}
-                >
-                    导出Excel
-                </Button>
+
+                {/* 导出按钮 */}
+                <div className="flex-shrink-0">
+                    <Button
+                        type="primary"
+                        icon={<DownloadOutlined />}
+                        onClick={handleExport}
+                        disabled={!tableData || tableData.length === 0}
+                    >
+                        导出Excel
+                    </Button>
+                </div>
             </div>
 
             {/* 合并表格 */}
