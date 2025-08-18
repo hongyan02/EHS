@@ -5,17 +5,17 @@
  */
 export interface MedicineItem {
   /** 唯一标识 */
-  key: string;
+  wuzibianma: string;
   /** 药品名称 */
-  name: string;
+  wuzimingcheng: string;
   /** 规格 */
-  spec: string;
+  guigexinghao: string;
   /** 单位 */
-  unit: string;
+  danwei: string;
   /** 库存数量 */
-  count: number;
+  chuku: number;
   /** 库存阈值 */
-  threshold: number;
+  fazhi: number;
   /** 过期日期 */
   expireDate: string;
 }

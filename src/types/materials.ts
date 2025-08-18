@@ -7,15 +7,15 @@ export interface StockItem {
   /** 唯一标识 */
   key: string;
   /** 物料名称 */
-  title: string;
+  wuzimingcheng: string;
   /** 物料编号 */
-  number: string;
+  wuzibianma: string;
   /** 单位 */
-  unit: string;
+  danwei: string;
   /** 当前库存数量 */
-  count: string;
+  kucun: string;
   /** 库存阈值 */
-  threshold: string;
+  fazhi: string;
   /** 用途 */
   use: string;
   /** 备注 */
