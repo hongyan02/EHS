@@ -23,16 +23,15 @@ export const useMedicineStock = () => {
 
         return stockData.data.map((item, index) => ({
             key: index.toString(),
-            wuzimingcheng: item.wuzimingcheng || "未知药品",
-            guigexinghao: item.guigexinghao || "未知规格",
-            danwei: item.danwei || "个",
+            wuzimingcheng: item.wuzimingcheng || "",
+            guigexinghao: item.guigexinghao || "",
+            danwei: item.danwei || "",
             kucun: item.kucun || 0,
             fazhi: item.fazhi || 0,
             ruku: item.ruku || 0,
             chuku: item.chuku || 0,
             lei: item.lei,
-            // 添加过期日期字段（API中可能没有，使用默认值）
-            expireDate: item.expireDate || "2024-12-31",
+            expireDate: item.expireDate || "",
         }));
     }, [stockData]);
 

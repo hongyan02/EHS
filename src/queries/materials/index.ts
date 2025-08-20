@@ -1,4 +1,12 @@
-import { getApplication, getMaterial, createApplication } from "./api";
+import {
+    getApplication,
+    getMaterial,
+    createApplication,
+    deleteApplication,
+    getMaterialByApplication,
+    createMaterialByApplication,
+    getMaterialName,
+} from "./api";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useApplicationQuery = () => {
@@ -26,5 +34,45 @@ export const useCreateApplication = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["application"] });
         },
+    });
+};
+
+export const useDeleteApplication = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: deleteApplication,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["application"] });
+        },
+    });
+};
+
+export const useGetMaterialByApplication = (applicationId) => {
+    return useQuery({
+        queryKey: ["materialByApplication", applicationId],
+        queryFn: () => {
+            if (!applicationId) return Promise.resolve({ data: [] });
+            const formData = new URLSearchParams();
+            formData.append("id", applicationId.toString());
+            return getMaterialByApplication(formData);
+        },
+        enabled: !!applicationId,
+    });
+};
+
+export const useCreateMaterialByApplication = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: createMaterialByApplication,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["materialByApplication"] });
+        },
+    });
+};
+
+export const useGetMaterialName = () => {
+    return useQuery({
+        queryKey: ["materialName"],
+        queryFn: getMaterialName,
     });
 };

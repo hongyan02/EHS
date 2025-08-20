@@ -19,7 +19,6 @@ export const useCreateAccident = () => {
     })
 }
 
-
 export const useDeleteAccident = () => {
     const queryClient = useQueryClient();
     return useMutation({
