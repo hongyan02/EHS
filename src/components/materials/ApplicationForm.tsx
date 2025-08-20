@@ -46,11 +46,11 @@ export default function ApplicationForm({
             Object.entries(submitData).forEach(([key, value]) => {
                 formData.append(key, value);
             });
-            
+
             await createApplicationMutation.mutateAsync(formData.toString());
             message.success("申请提交成功！");
             form.resetFields();
-            
+
             if (onSubmit) {
                 onSubmit(submitData);
             }

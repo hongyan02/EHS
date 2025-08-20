@@ -5,12 +5,47 @@ import ApplicationForm from "@/components/materials/ApplicationForm";
 import { Button, Spin, Alert, Modal } from "antd";
 import { PlusOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import Link from "next/link";
-import { useState } from "react";
-import { useMaterialsIn } from "@/hooks/materials/use-materials-in";
+import { useState, useEffect, useMemo } from "react";
+import { useApplicationQuery } from "@/queries/materials";
+import useMaterialsStore from "@/store/useMaterialsStore";
 
 export default function Page() {
-    const { data: materialsData, isLoading, error } = useMaterialsIn();
+    const { data: rawMaterialsData, isLoading, error } = useApplicationQuery();
+    const { setMaterialsData, setLoading, setError } = useMaterialsStore();
     const [isModalVisible, setIsModalVisible] = useState(false);
+
+    // 将原始数据同步到store中
+    useEffect(() => {
+        setLoading(isLoading);
+        if (rawMaterialsData?.data) {
+            setMaterialsData(rawMaterialsData.data);
+        }
+        if (error) {
+            setError(error);
+        }
+    }, [rawMaterialsData, isLoading, error, setMaterialsData, setLoading, setError]);
+
+    // 过滤出入库类型的数据并转换格式（用于显示）
+    const materialsData = useMemo(() => {
+        if (!rawMaterialsData?.data) {
+            return [];
+        }
+
+        return rawMaterialsData.data
+            .filter((item) => item.leibie === "in")
+            .map((item) => ({
+                id: item.id,
+                title: item.title || "未填写标题",
+                danhao: item.danhao,
+                chuangjianren: item.chuangjianren || "未知",
+                chuangjianshijian: item.chuangjianshijian || "未知",
+                querenshijian: item.querenshijian,
+                querenren: item.querenren,
+                // 根据确认时间判断状态
+                current: item.querenshijian ? 2 : 0,
+                status: item.querenshijian ? "finish" : "process",
+            }));
+    }, [rawMaterialsData]);
     const handleShowModal = () => {
         setIsModalVisible(true);
     };
@@ -20,7 +55,7 @@ export default function Page() {
     };
 
     const handleSubmit = (values) => {
-        console.log('申请数据:', values);
+        console.log("申请数据:", values);
         setIsModalVisible(false);
     };
 
@@ -80,9 +115,7 @@ export default function Page() {
                 width={600}
                 destroyOnHidden
             >
-                <ApplicationForm
-                    onSubmit={handleSubmit}
-                />
+                <ApplicationForm onSubmit={handleSubmit} />
             </Modal>
         </div>
     );
