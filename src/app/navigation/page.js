@@ -82,6 +82,15 @@ export default function NavigationPage() {
             path: "/materials",
             status: "active",
         },
+        {
+            id: "healthy",
+            title: "职业健康危害",
+            description: "职业健康危害",
+            icon: <EditOutlined />,
+            color: "#FFA500",
+            path: "/healthy",
+            status: "active",
+        },
     ];
 
     // 未来规划模块配置
@@ -178,14 +187,7 @@ export default function NavigationPage() {
         const isActive = module.status === "active";
 
         return (
-            <Col
-                xs={24}
-                sm={12}
-                md={8}
-                lg={6}
-                xl={6}
-                key={module.id}
-            >
+            <Col xs={24} sm={12} md={8} lg={6} xl={6} key={module.id}>
                 <Badge.Ribbon
                     text={isActive ? "已上线" : "规划中"}
                     color={isActive ? "green" : "blue"}
@@ -255,26 +257,17 @@ export default function NavigationPage() {
             <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
                 {/* 页面标题 */}
                 <div style={{ textAlign: "center", marginBottom: "32px" }}>
-                    <Title
-                        level={1}
-                        style={{ color: "#262626", marginBottom: "8px" }}
-                    >
+                    <Title level={1} style={{ color: "#262626", marginBottom: "8px" }}>
                         EHS
                     </Title>
-                    <Text
-                        type="secondary"
-                        style={{ fontSize: "16px" }}
-                    >
+                    <Text type="secondary" style={{ fontSize: "16px" }}>
                         Enterprise Health & Safety Management System
                     </Text>
                 </div>
 
                 {/* 现有模块 */}
                 <div style={{ marginBottom: "48px" }}>
-                    <Title
-                        level={2}
-                        style={{ color: "#262626", marginBottom: "24px" }}
-                    >
+                    <Title level={2} style={{ color: "#262626", marginBottom: "24px" }}>
                         🚀 现有功能模块
                     </Title>
                     <Row gutter={[16, 16]}>{existingModules.map(_renderModuleCard)}</Row>
