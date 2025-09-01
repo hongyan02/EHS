@@ -4,7 +4,7 @@ import { useState, useMemo, useCallback } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/zh-cn";
 import LogForm from "../../components/calendar/LogForm.js";
-import { useDutyLog } from "../../hooks/use-duty-log";
+import { useDutyLog } from "../../hooks/use-duty-log.js";
 import {
     useCreateDutyLog,
     useUpdateDutyLog,
@@ -469,11 +469,7 @@ export default function WriteLog() {
     }, []);
 
     return (
-        <Space
-            direction="vertical"
-            size="middle"
-            style={{ width: "100%" }}
-        >
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
             <DatePicker.MonthPicker
                 value={selectedMonth}
                 onChange={_handleMonthChange}
@@ -481,11 +477,7 @@ export default function WriteLog() {
                 style={{ width: 200 }}
                 format="YYYY年MM月"
             />
-            <Collapse
-                items={items}
-                defaultActiveKey={[""]}
-                size="small"
-            />
+            <Collapse items={items} defaultActiveKey={[""]} size="small" />
         </Space>
     );
 }
