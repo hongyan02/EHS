@@ -83,24 +83,14 @@ export default function DutyLogDetailPage() {
         return (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {employees.map((employee, index) => (
-                    <div
-                        key={index}
-                        className="flex flex-col space-y-1 p-3 bg-gray-50 rounded-lg"
-                    >
+                    <div key={index} className="flex flex-col space-y-1 p-3 bg-gray-50 rounded-lg">
                         <div className="flex items-center space-x-2">
                             <UserOutlined className="text-gray-500" />
-                            <Text
-                                strong
-                                className="text-sm"
-                            >
+                            <Text strong className="text-sm">
                                 {employee.employee_name}
                             </Text>
                         </div>
-                        <Tag
-                            color="blue"
-                            size="small"
-                            className="self-start"
-                        >
+                        <Tag color="blue" size="small" className="self-start">
                             {positionMap[employee.position] || employee.position}
                         </Tag>
                         {employee.phone && (
@@ -124,10 +114,7 @@ export default function DutyLogDetailPage() {
         return (
             <ul className="list-none space-y-1">
                 {todos.map((todo, index) => (
-                    <li
-                        key={index}
-                        className="flex items-center space-x-2"
-                    >
+                    <li key={index} className="flex items-center space-x-2">
                         <CheckCircleOutlined className="text-green-500 text-xs" />
                         <Text>{typeof todo === "string" ? todo : todo.text || todo}</Text>
                     </li>
@@ -142,10 +129,7 @@ export default function DutyLogDetailPage() {
                 {/* 页面标题 */}
                 <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
                     <div className="text-center">
-                        <Title
-                            level={2}
-                            className="mb-2"
-                        >
+                        <Title level={2} className="mb-2">
                             <ClockCircleOutlined className="mr-2" />
                             值班详情
                         </Title>

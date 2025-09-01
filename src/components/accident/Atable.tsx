@@ -3,7 +3,8 @@ import React from "react";
 import { Table, Tag, Tooltip, Alert } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import type { TableRowSelection } from "antd/es/table/interface";
-import type { Accident } from "@/lib/db/schema";
+// import type { Accident } from "@/lib/db/schema";
+import { Accident } from "@/types/accident";
 import { useAccidents } from "@/queries/accidents";
 import type { AccidentTableRow, AccidentTableProps } from "@/types/accident";
 
@@ -14,7 +15,10 @@ interface ATableProps {
     onSelectionChange?: (selectedRowKeys: React.Key[], selectedRows: AccidentData[]) => void;
 }
 
-export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentTableProps): React.JSX.Element {
+export default function ATable({
+    selectedRowKeys,
+    onSelectionChange,
+}: AccidentTableProps): React.JSX.Element {
     const { data: accidents, isLoading, error } = useAccidents();
     const [currentPage, setCurrentPage] = React.useState(1);
     const [pageSize, setPageSize] = React.useState(10);
@@ -64,8 +68,8 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             width: 100,
             render: (month: string) => {
                 // 将 yyyy-mm 格式转换为 yyyy/mm/01
-                if (month && month.includes('-')) {
-                    return month.replace('-', '/') + '/01';
+                if (month && month.includes("-")) {
+                    return month.replace("-", "/") + "/01";
                 }
                 return month;
             },
@@ -101,7 +105,11 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 200,
             render: (text: string) => {
-                return <Tooltip placement="leftTop" title={text}>{text}</Tooltip>;
+                return (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                );
             },
         },
         {
@@ -125,7 +133,11 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 240,
             render: (text: string) => {
-                return <Tooltip placement="leftTop" title={text}>{text}</Tooltip>;
+                return (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                );
             },
         },
         {
@@ -136,7 +148,11 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             width: 200,
             ellipsis: true,
             render: (text: string) => {
-                return <Tooltip placement="leftTop" title={text}>{text}</Tooltip>;
+                return (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                );
             },
         },
         {
@@ -156,7 +172,12 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 140,
             ellipsis: true,
-            render: (text: string) => text && <Tooltip placement="leftTop" title={text}>{text}</Tooltip>,
+            render: (text: string) =>
+                text && (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                ),
         },
         {
             title: "事故类型",
@@ -224,7 +245,12 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             ellipsis: true,
             width: 120,
-            render: (text: string) => text && <Tooltip placement="leftTop" title={text}>{text}</Tooltip>,
+            render: (text: string) =>
+                text && (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                ),
         },
         {
             title: "事件类型",
@@ -261,7 +287,12 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 200,
             ellipsis: true,
-            render: (text: string) => text && <Tooltip placement="leftTop" title={text}>{text}</Tooltip>,
+            render: (text: string) =>
+                text && (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                ),
         },
         {
             title: "间接原因类型",
@@ -277,7 +308,12 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 200,
             ellipsis: true,
-            render: (text: string) => text && <Tooltip placement="leftTop" title={text}>{text}</Tooltip>,
+            render: (text: string) =>
+                text && (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                ),
         },
         {
             title: "系统原因类型",
@@ -293,7 +329,12 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 200,
             ellipsis: true,
-            render: (text: string) => text && <Tooltip placement="leftTop" title={text}>{text}</Tooltip>,
+            render: (text: string) =>
+                text && (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                ),
         },
         {
             title: "整改措施",
@@ -302,7 +343,12 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 200,
             ellipsis: true,
-            render: (text: string) => text && <Tooltip placement="leftTop" title={text}>{text}</Tooltip>,
+            render: (text: string) =>
+                text && (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                ),
         },
         {
             title: "整改完成情况",
@@ -334,7 +380,12 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
             align: "center",
             width: 200,
             ellipsis: true,
-            render: (text: string) => text && <Tooltip placement="leftTop" title={text}>{text}</Tooltip>,
+            render: (text: string) =>
+                text && (
+                    <Tooltip placement="leftTop" title={text}>
+                        {text}
+                    </Tooltip>
+                ),
         },
         {
             title: "是否上报",
@@ -378,10 +429,10 @@ export default function ATable({ selectedRowKeys, onSelectionChange }: AccidentT
 
     return (
         <div className="w-full h-full">
-            <Table 
-                columns={columns} 
-                dataSource={dataSource} 
-                scroll={{ x: 5500, y: 'calc(100vh - 200px)' }} 
+            <Table
+                columns={columns}
+                dataSource={dataSource}
+                scroll={{ x: 5500, y: "calc(100vh - 200px)" }}
                 size="middle"
                 rowKey={(record) => record.id}
                 loading={isLoading}

@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useWindowSize } from "@/hooks/use-window-size";
+import { useWindowSize } from "@/hooks/tiptap/use-window-size";
 
 /**
  * Custom hook that ensures the cursor remains visible when typing in a TipTap editor.
