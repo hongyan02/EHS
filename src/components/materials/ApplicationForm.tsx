@@ -38,7 +38,7 @@ export default function ApplicationForm({
                 title: values.title || "",
                 beizhu: values.beizhu || "",
                 lei: values.lei || "",
-                leibie: "in",
+                leibie: values.leibie || "",
             };
 
             // 将数据转换为URLSearchParams格式
@@ -73,7 +73,19 @@ export default function ApplicationForm({
                 onFinish={handleSubmit}
                 initialValues={initialValues}
             >
-                <div className="grid grid-cols-4 gap-4 mb-2">
+                <div className="grid grid-cols-5 gap-4 mb-2">
+                    <Form.Item
+                        label="申请类型"
+                        name="leibie"
+                        rules={[{ required: true, message: "请选择申请类型" }]}
+                        className="mb-0"
+                    >
+                        <Select placeholder="请选择申请类型" size="middle">
+                            <Option value="in">入库申请</Option>
+                            <Option value="out">出库申请</Option>
+                        </Select>
+                    </Form.Item>
+
                     <Form.Item
                         label="标题"
                         name="title"
@@ -84,11 +96,7 @@ export default function ApplicationForm({
                         ]}
                         className="mb-0"
                     >
-                        <Input
-                            placeholder="请输入申请标题"
-                            maxLength={100}
-                            size="middle"
-                        />
+                        <Input placeholder="请输入申请标题" maxLength={100} size="middle" />
                     </Form.Item>
 
                     <Form.Item
@@ -101,11 +109,7 @@ export default function ApplicationForm({
                         ]}
                         className="mb-0"
                     >
-                        <Input
-                            placeholder="请输入工号"
-                            maxLength={20}
-                            size="middle"
-                        />
+                        <Input placeholder="请输入工号" maxLength={20} size="middle" />
                     </Form.Item>
 
                     <Form.Item
@@ -114,10 +118,7 @@ export default function ApplicationForm({
                         rules={[{ required: true, message: "请选择类别" }]}
                         className="mb-0"
                     >
-                        <Select
-                            placeholder="请选择类别"
-                            size="middle"
-                        >
+                        <Select placeholder="请选择类别" size="middle">
                             <Option value="1">物料</Option>
                             <Option value="2">药品</Option>
                         </Select>
@@ -129,10 +130,7 @@ export default function ApplicationForm({
                         rules={[{ required: true, message: "请选择来源" }]}
                         className="mb-0"
                     >
-                        <Select
-                            placeholder="请选择来源"
-                            size="middle"
-                        >
+                        <Select placeholder="请选择来源" size="middle">
                             <Option value="生产部门">生产部门</Option>
                             <Option value="维修部门">维修部门</Option>
                             <Option value="质检部门">质检部门</Option>

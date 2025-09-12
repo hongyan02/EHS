@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 /**
  * 检测是否为移动端设备的Hook
@@ -6,25 +6,25 @@ import { useEffect, useState } from 'react';
  * @returns boolean 是否为移动端
  */
 export function useIsMobile(breakpoint: number = 768): boolean {
-  const [isMobile, setIsMobile] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    const checkIsMobile = () => {
-      setIsMobile(window.innerWidth < breakpoint);
-    };
+    useEffect(() => {
+        const checkIsMobile = () => {
+            setIsMobile(window.innerWidth < breakpoint);
+        };
 
-    // 初始检查
-    checkIsMobile();
+        // 初始检查
+        checkIsMobile();
 
-    // 监听窗口大小变化
-    window.addEventListener('resize', checkIsMobile);
+        // 监听窗口大小变化
+        window.addEventListener("resize", checkIsMobile);
 
-    return () => {
-      window.removeEventListener('resize', checkIsMobile);
-    };
-  }, [breakpoint]);
+        return () => {
+            window.removeEventListener("resize", checkIsMobile);
+        };
+    }, [breakpoint]);
 
-  return isMobile;
+    return isMobile;
 }
 
 /**
@@ -33,7 +33,7 @@ export function useIsMobile(breakpoint: number = 768): boolean {
  * @returns boolean 是否为移动端
  */
 export function isMobileUserAgent(userAgent: string): boolean {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent);
 }
 
 /**
@@ -41,8 +41,8 @@ export function isMobileUserAgent(userAgent: string): boolean {
  * @returns number 视口宽度
  */
 export function getViewportWidth(): number {
-  if (typeof window !== 'undefined') {
-    return window.innerWidth;
-  }
-  return 0;
+    if (typeof window !== "undefined") {
+        return window.innerWidth;
+    }
+    return 0;
 }
